@@ -549,25 +549,17 @@ function renderCard(v,ev){
   </a>`;
 }
 
-// イベント取得
+// イベント取得（events.json を読むだけ。生成は毎朝のスケジュール実行が担当）
 async function fetchEvents(){
-  const now=new Date();
-  const label=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${DAYS[now.getDay()]}）`;
-  const prompt=`今日は${label}です。東京・神宮外苑の4施設の今日のイベントをJSONのみで返してください。ウェブ検索で必ず確認してください。神宮球場は大学野球（東都・六大学等）も含めて確認すること。\n{"jingu":{"name":"イベント名またはなし","time":"例：18:00 試合開始（開場16:00）"},"kokuritsu":{"name":"...","time":"..."},"rugby":{"name":"...","time":"..."},"hall":{"name":"...","time":"..."},"alert":"混雑注意コメントまたは空文字"}\n施設：神宮球場、国立競技場(MUFGスタジアム)、秩父宮ラグビー場、日本青年館ホール。JSONのみ返すこと。説明文不要。`;
-
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','anthropic-beta':'interactivity-2025-05-14'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})
-  });
-  if(!res.ok) throw new Error(`API ${res.status}`);
-  const data=await res.json();
-  let txt='';
-  for(const b of data.content){if(b.type==='text'){txt=b.text;if(txt.includes('{'))break;}}
-  return JSON.parse(txt.replace(/```json|```/g,'').trim());
+  const r=await fetch(`./events.json?t=${Date.now()}`,{cache:'no-store'});
+  if(!r.ok) throw new Error(`events.json ${r.status}`);
+  return r.json();
 }
 
+let lastLoad=0;
+
 async function loadAll(){
+  lastLoad=Date.now();
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spin');
 
@@ -590,12 +582,18 @@ async function loadAll(){
     const ev=await fetchEvents();
     document.getElementById('venues').innerHTML=VENUES.map(v=>renderCard(v,ev[v.id])).join('');
     const ac=document.getElementById('alert-container');
-    ac.innerHTML=(ev.alert&&ev.alert.trim())?`<div class="alert-banner">⚠️ ${ev.alert}</div>`:'';
+    let html=(ev.alert&&ev.alert.trim())?`<div class="alert-banner">⚠️ ${ev.alert}</div>`:'';
+    if(ev.updated){
+      const u=new Date(ev.updated);
+      if(!isNaN(u)) html+=`<div style="font-size:11px;color:var(--muted);margin:2px 2px 10px;">イベント情報：${u.getMonth()+1}/${u.getDate()} ${p2(u.getHours())}:${p2(u.getMinutes())} 時点（毎朝自動更新／最新は各カードから公式サイトへ）</div>`;
+    }
+    ac.innerHTML=html;
   }catch(e){
+    console.error('イベントエラー',e);
     document.getElementById('venues').innerHTML=VENUES.map(v=>`
       <a class="vcard" href="${v.url}" target="_blank" rel="noopener">
         <div class="vcard-top"><div class="vicon ${v.cls}">${v.icon}</div><div class="vnames"><div class="vja">${v.ja}</div><div class="ven">${v.en}</div></div></div>
-        <div class="vnone" style="color:var(--red);font-style:italic;">取得できませんでした（クリックで公式サイトへ）</div>
+        <div class="vnone" style="color:var(--sub);">クリックで公式サイトの最新イベント情報へ</div>
         <div class="vcard-arrow">›</div>
       </a>`).join('');
   }
@@ -604,6 +602,13 @@ async function loadAll(){
 }
 
 loadAll();
+
+// 天気は1時間ごとに自動更新（イベントも合わせて取り直す）
+setInterval(loadAll, 3600000);
+// タブに戻ったとき、前回更新から30分以上経っていれば更新
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && Date.now()-lastLoad > 1800000) loadAll();
+});
 </script>
 </body>
 </html>
