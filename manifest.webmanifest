@@ -1,0 +1,14 @@
+{
+  "name": "外苑エリア スタッフダッシュボード",
+  "short_name": "外苑ダッシュボード",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#F2F5FA",
+  "theme_color": "#F2F5FA",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

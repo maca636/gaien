@@ -1,407 +1,395 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>外苑エリア イベント・天気情報</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+<title>外苑エリア スタッフダッシュボード</title>
+<meta name="viewport" content="width=1920, initial-scale=1">
 
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#F2F5FA">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="外苑ダッシュボード">
+
+<style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root{
-  --bg:#F0F4FB;
-  --white:#FFFFFF;
-  --border:#DDE3EF;
-  --text:#1C2640;
-  --sub:#5A6A8A;
-  --muted:#9AAABE;
-  --blue:#3B6FE8;
-  --blue-bg:#EBF1FD;
-  --red:#E03B3B;
-  --red-bg:#FEF0F0;
-  --green:#1E9E5E;
-  --green-bg:#EDFAF3;
-  --purple:#7048D4;
-  --purple-bg:#F3EFFD;
-  --shadow:0 1px 4px rgba(30,50,100,.07),0 1px 2px rgba(30,50,100,.04);
-  --shadow-md:0 4px 12px rgba(30,50,100,.10),0 1px 4px rgba(30,50,100,.05);
+  --bg:#F1F5FC;
+  --card:#FFFFFF;
+  --border:#E9EEF6;
+  --text:#22304A;
+  --sub:#5B6B8C;
+  --mute:#98A4BC;
+  --accent:#3B6FE8;
+  --accent-bg:#EAF1FD;
+  --shadow:0 2px 6px rgba(40,70,140,.07), 0 1px 3px rgba(40,70,140,.05);
+
+  --blue:#3B6FE8;   --blue-bg:#E9F0FE;
+  --purple:#8B5CF6; --purple-bg:#F2EEFE;
+  --green:#22A06B;  --green-bg:#E7F8EF;
+  --orange:#F0803C; --orange-bg:#FEEEE1;
+
+  --cong-0:#EAEEF5;
+  --cong-1:#9FCBF5;
+  --cong-2:#F5A94E;
+  --cong-3:#EF5B4E;
 }
 
-body{
-  font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;
+html,body{
+  width:100%;height:100%;
   background:var(--bg);
+  overflow:hidden;
+  font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',-apple-system,sans-serif;
   color:var(--text);
-  font-size:14px;
-  line-height:1.5;
-  min-height:100vh;
+}
+
+.viewport{
+  width:100vw;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  overflow:hidden;
+}
+
+.canvas{
+  width:1920px;height:1080px;
+  flex-shrink:0;
+  background:var(--bg);
+  padding:24px 32px 20px;
+  display:flex;flex-direction:column;
+  transform-origin:center center;
 }
 
 /* ===== HEADER ===== */
 .hdr{
-  background:var(--white);
-  border-bottom:1px solid var(--border);
-  padding:0 20px;
-  height:62px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  position:sticky;top:0;z-index:100;
-  box-shadow:var(--shadow);
-}
-
-.logo-block{flex-shrink:0;}
-.logo-main{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1;}
-.logo-sub{font-size:11px;color:var(--sub);margin-top:1px;letter-spacing:.02em;}
-
-.hdr-space{flex:1;}
-
-.clock-block{text-align:right;flex-shrink:0;margin-right:6px;}
-.clock-date{font-size:11px;color:var(--sub);letter-spacing:.03em;}
-.clock-time{font-size:28px;font-weight:700;letter-spacing:-.04em;line-height:1.1;color:var(--text);}
-
-.hdr-btn{
-  display:flex;flex-direction:column;gap:1px;
-  padding:8px 12px 8px 10px;
-  background:var(--bg);
-  border:1px solid var(--border);border-radius:8px;
-  text-decoration:none;color:var(--text);
-  transition:border-color .15s,background .15s;
-  flex-shrink:0;min-width:116px;cursor:pointer;
-  position:relative;
-}
-.hdr-btn::after{
-  content:'›';
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  font-size:18px;color:var(--muted);
-}
-.hdr-btn:hover{background:var(--blue-bg);border-color:var(--blue);}
-.hdr-btn .bicon{font-size:16px;margin-bottom:1px;}
-.hdr-btn .bname{font-size:12px;font-weight:700;line-height:1.2;}
-.hdr-btn .bmeta{font-size:10px;color:var(--sub);}
-
-.hdr-refresh{
-  width:36px;height:36px;border-radius:50%;
-  border:1px solid var(--border);background:var(--white);
-  cursor:pointer;font-size:16px;color:var(--sub);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:background .15s;
-}
-.hdr-refresh:hover{background:var(--bg);}
-.hdr-refresh.spin{animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ===== MAIN ===== */
-.main{padding:16px 20px 24px;max-width:1300px;margin:0 auto;}
-
-/* ===== ALERT ===== */
-.alert-banner{
-  background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;
-  padding:9px 14px;font-size:12px;color:#92400E;
-  margin-bottom:12px;display:flex;align-items:center;gap:8px;
-}
-
-/* ===== VENUE CARDS ===== */
-.venues{
+  height:76px;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:16px;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  margin-bottom:20px;
 }
+.hdr-left{display:flex;align-items:baseline;gap:12px;}
+.hdr-title{font-size:36px;font-weight:800;letter-spacing:-.02em;color:var(--text);}
+.hdr-sub{font-size:15px;font-weight:500;color:var(--sub);}
 
-.vcard{
-  background:var(--white);
+.hdr-center{text-align:center;}
+.hdr-date{font-size:14px;color:var(--sub);font-weight:600;letter-spacing:.03em;}
+.hdr-time{font-size:40px;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.1;}
+
+.hdr-right{justify-self:end;display:flex;align-items:center;gap:12px;}
+.hdr-btn{
+  width:190px;height:64px;
+  border-radius:16px;
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:16px;
-  text-decoration:none;color:inherit;display:block;
+  background:var(--card);
   box-shadow:var(--shadow);
-  transition:box-shadow .15s,transform .15s;
-  position:relative;
-  min-height:140px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;
+  text-decoration:none;color:var(--text);
 }
-.vcard:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
-.vcard-arrow{
-  position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  width:28px;height:28px;border-radius:50%;
-  background:var(--bg);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:var(--muted);
-}
+.hdr-btn-text{font-size:12px;font-weight:600;line-height:1.4;color:var(--text);}
+.hdr-btn-arrow{font-size:18px;color:var(--mute);}
+.hdr-updated{font-size:12px;color:var(--mute);white-space:nowrap;padding-left:4px;}
 
-.vcard-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+/* ===== EVENT CARDS ===== */
+.events-row{
+  height:270px;
+  display:grid;
+  grid-template-columns:repeat(4,452px);
+  gap:16px;
+  margin-bottom:20px;
+}
+.vcard{
+  height:270px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  display:flex;flex-direction:column;
+  text-decoration:none;color:inherit;
+  position:relative;
+  transition:transform .12s ease;
+}
+.vcard-top{
+  height:52px;
+  display:flex;align-items:center;gap:10px;
+}
 .vicon{
-  width:38px;height:38px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  width:40px;height:40px;border-radius:13px;
+  background:var(--accent-bg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
 }
 .vicon.b{background:var(--blue-bg);}
-.vicon.c{background:var(--red-bg);}
+.vicon.c{background:var(--purple-bg);}
 .vicon.r{background:var(--green-bg);}
-.vicon.h{background:var(--purple-bg);}
-
+.vicon.h{background:var(--orange-bg);}
 .vnames{flex:1;min-width:0;}
-.vja{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ven{font-size:9px;color:var(--muted);letter-spacing:.06em;margin-top:1px;}
+.vja{font-size:21px;font-weight:700;color:var(--text);line-height:1.25;}
+.ven{font-size:10.5px;color:var(--mute);margin-top:1px;letter-spacing:.02em;}
+.vtag{
+  font-size:12px;font-weight:700;
+  padding:5px 12px;border-radius:999px;
+  background:var(--accent-bg);color:var(--accent);
+  white-space:nowrap;flex-shrink:0;
+}
+.vtag.b{background:var(--blue-bg);color:var(--blue);}
+.vtag.c{background:var(--purple-bg);color:var(--purple);}
+.vtag.r{background:var(--green-bg);color:var(--green);}
+.vtag.h{background:var(--orange-bg);color:var(--orange);}
+.vtag.none{background:#EEF1F6;color:var(--mute);}
 
-.vtag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:999px;flex-shrink:0;}
-.vtag.tb{background:var(--blue-bg);color:var(--blue);}
-.vtag.tc{background:var(--red-bg);color:var(--red);}
-.vtag.tr{background:var(--green-bg);color:var(--green);}
-.vtag.th{background:var(--purple-bg);color:var(--purple);}
-.vtag.tn{background:var(--bg);color:var(--muted);}
+.vevt-list{
+  flex:1;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  gap:13px;
+  margin-top:6px;
+  overflow:hidden;
+}
+.vevt-item{display:flex;gap:12px;align-items:flex-start;}
+.vevt-time{
+  min-width:50px;flex-shrink:0;
+  font-size:23px;font-weight:700;color:var(--text);line-height:1.15;
+  padding-top:1px;
+}
+.vevt-time.b{color:var(--blue);}
+.vevt-time.c{color:var(--purple);}
+.vevt-time.r{color:var(--green);}
+.vevt-time.h{color:var(--orange);}
+.vevt-time.tbd{font-size:13px;font-weight:600;color:var(--mute)!important;padding-top:5px;}
+.vevt-body{min-width:0;}
+.vevt-name{font-size:16px;font-weight:600;color:var(--text);line-height:1.3;}
+.vevt-sub{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.3;}
+.vnone{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--mute);
+}
+.vcard-arrow{
+  position:absolute;right:16px;bottom:14px;
+  font-size:17px;color:var(--mute);
+  font-weight:700;
+}
+.vcard-arrow.b{color:var(--blue);}
+.vcard-arrow.c{color:var(--purple);}
+.vcard-arrow.r{color:var(--green);}
+.vcard-arrow.h{color:var(--orange);}
 
-.vevt-name{font-size:13px;font-weight:500;line-height:1.45;margin-bottom:8px;color:var(--text);}
-.vtime-big{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--text);}
-.vtime-big .unit{font-size:13px;font-weight:500;color:var(--sub);}
-.vtime-open{font-size:11px;color:var(--muted);margin-top:3px;}
-.vnone{font-size:13px;color:var(--muted);padding:6px 0;}
-.vevt-list{display:flex;flex-direction:column;gap:8px;}
-.vevt-item{display:flex;align-items:baseline;gap:8px;}
-.vevt-item .vtime-big{font-size:14px;flex-shrink:0;min-width:38px;}
-.vevt-text{min-width:0;}
-.vevt-sub{font-size:11px;color:var(--sub);margin-top:1px;}
-
-/* skeleton */
-.sk{display:block;border-radius:4px;background:linear-gradient(90deg,#edf0f7 25%,#f8faff 50%,#edf0f7 75%);background-size:200% 100%;animation:sh 1.2s infinite;}
-@keyframes sh{to{background-position:-200% 0;}}
-
-/* ===== WEATHER SECTION ===== */
-/* 今日の天気エリア全体：左大きめ、中雨雲、右週間 */
-.wgrid{
+/* ===== WEATHER ===== */
+.weather-row{
+  height:390px;
   display:grid;
-  grid-template-columns:1.1fr 1fr 1fr;
-  gap:12px;
+  grid-template-columns:900px 420px 496px;
+  gap:20px;
 }
-
 .wcard{
-  background:var(--white);
+  height:390px;
+  background:var(--card);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:18px 20px;
+  border-radius:20px;
   box-shadow:var(--shadow);
+  padding:20px;
+  display:flex;flex-direction:column;
 }
-
-/* カードヘッダー行 */
-.wc-head{
-  display:flex;justify-content:space-between;align-items:flex-start;
+.wcard-head{
+  display:flex;align-items:baseline;justify-content:space-between;
   margin-bottom:14px;
 }
-.wc-title{font-size:14px;font-weight:700;color:var(--text);}
-.wc-sub{font-size:11px;color:var(--sub);font-weight:400;margin-top:1px;}
-.wc-link{font-size:11px;color:var(--blue);text-decoration:none;white-space:nowrap;}
-.wc-link:hover{text-decoration:underline;}
+.wcard-title{font-size:17px;font-weight:700;color:var(--text);}
+.wcard-link{font-size:11.5px;color:var(--accent);text-decoration:none;font-weight:600;}
 
-/* ---- 今日の天気（左カード） ---- */
-/* 上部：アイコン＋説明＋大温度 */
-.today-top{display:flex;align-items:center;gap:18px;margin-bottom:16px;}
-.today-icon{font-size:56px;line-height:1;flex-shrink:0;}
-.today-right{}
-.today-desc{font-size:14px;color:var(--sub);margin-bottom:4px;}
-.today-temp{font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1;}
-.today-temp .tmax{color:var(--red);}
-.today-temp .sep{font-size:24px;color:var(--muted);margin:0 4px;}
-.today-temp .tmin{color:var(--blue);}
-.today-temp .tu{font-size:18px;font-weight:500;}
-
-/* 降水確率・湿度・風 */
-.today-stats{
-  display:flex;
-  border-top:1px solid var(--border);
-  padding-top:12px;
+/* today weather */
+.w-today-top{
+  display:flex;align-items:center;gap:22px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
   margin-bottom:16px;
 }
-.ts{flex:1;text-align:center;border-right:1px solid var(--border);padding:0 6px;}
-.ts:last-child{border-right:none;}
-.ts-label{font-size:10px;color:var(--muted);margin-bottom:2px;}
-.ts-icon{font-size:15px;margin-bottom:2px;}
-.ts-val{font-size:13px;font-weight:600;color:var(--text);}
+.w-today-icon{font-size:54px;line-height:1;}
+.w-today-mid{flex:1;}
+.w-today-desc{font-size:14px;color:var(--sub);font-weight:600;margin-bottom:4px;}
+.w-today-temp{font-size:38px;font-weight:700;color:var(--text);line-height:1;}
+.w-today-temp .lo{font-size:20px;color:var(--mute);font-weight:600;margin-left:6px;}
+.w-today-stats{display:flex;gap:26px;}
+.w-stat{text-align:left;}
+.w-stat-label{font-size:11px;color:var(--mute);margin-bottom:3px;}
+.w-stat-val{font-size:18px;font-weight:700;color:var(--text);}
 
-/* 1時間ごとの天気 — 左カード下部に配置 */
-.hourly-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;}
-.hourly-wrap{overflow-x:auto;padding-bottom:4px;}
-.hourly-wrap::-webkit-scrollbar{height:3px;}
-.hourly-wrap::-webkit-scrollbar-track{background:var(--bg);border-radius:2px;}
-.hourly-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.hourly-list{display:flex;gap:2px;min-width:max-content;}
-.hi{
-  flex-shrink:0;width:48px;text-align:center;
-  padding:6px 4px;border-radius:8px;
+.w-hourly-title{font-size:12.5px;font-weight:700;color:var(--sub);margin-bottom:10px;}
+.w-hourly-row{display:flex;justify-content:space-between;flex:1;}
+.w-hcell{
+  width:74px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  border-radius:14px;padding:6px 0;
 }
-.hi.now-h{background:var(--blue-bg);}
-.hi-h{font-size:10px;color:var(--muted);margin-bottom:3px;}
-.hi-icon{font-size:20px;margin-bottom:3px;line-height:1;}
-.hi-temp{font-size:12px;font-weight:700;color:var(--red);margin-bottom:2px;}
-.hi-rain{font-size:10px;color:var(--blue);}
+.w-hcell.now{background:var(--accent-bg);}
+.w-hcell .h-t{font-size:12px;color:var(--sub);font-weight:600;}
+.w-hcell .h-icon{font-size:24px;}
+.w-hcell .h-temp{font-size:15px;font-weight:700;color:var(--text);}
+.w-hcell .h-rain{font-size:11px;color:var(--accent);font-weight:600;}
 
-/* ---- 雨雲レーダー（中カード）---- */
-.radar-placeholder{
-  background:linear-gradient(135deg,#c8daf5 0%,#a0c0e8 30%,#7ba8d8 60%,#5890c8 100%);
-  border-radius:8px;
-  height:200px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  color:rgba(255,255,255,.85);
-  font-size:13px;
-  gap:6px;
-  position:relative;overflow:hidden;
+/* radar */
+.radar-box{
+  flex:1;border-radius:16px;background:var(--blue-bg);
+  border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;position:relative;
 }
-.radar-placeholder::before{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80px 60px at 55% 40%, rgba(255,80,80,.35) 0%, transparent 70%),
-    radial-gradient(ellipse 50px 40px at 70% 60%, rgba(255,180,0,.3) 0%, transparent 70%),
-    radial-gradient(ellipse 40px 30px at 45% 55%, rgba(0,200,100,.25) 0%, transparent 70%);
-}
-.radar-pin{font-size:28px;position:relative;}
-.radar-label{font-size:12px;font-weight:600;position:relative;text-shadow:0 1px 2px rgba(0,0,0,.3);}
-.radar-time{
-  position:absolute;bottom:8px;right:10px;
-  font-size:10px;color:rgba(255,255,255,.8);
-}
-.radar-legend{
-  position:absolute;bottom:8px;left:10px;
-  display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,.8);
-}
-.legend-bar{
-  width:60px;height:6px;border-radius:3px;
-  background:linear-gradient(to right,#4fc3f7,#66bb6a,#ffee58,#ff7043,#e53935);
-}
+.radar-pin{font-size:30px;}
+.radar-label{font-size:13px;font-weight:700;color:var(--sub);}
+.radar-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute);}
+.radar-legend-bar{width:70px;height:6px;border-radius:3px;background:linear-gradient(90deg,#D8E4F5,#4E78C4);}
+.radar-note{font-size:11px;color:var(--mute);text-align:center;max-width:280px;}
+.radar-time{position:absolute;bottom:10px;right:14px;font-size:11px;color:var(--mute);}
 
-/* ---- 週間天気（右カード）---- */
-.weekly{display:flex;flex-direction:column;gap:0;}
-.wi{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 0;
+/* weekly */
+.weekly-list{flex:1;display:flex;flex-direction:column;justify-content:space-between;}
+.w-day{
+  display:flex;align-items:center;
+  height:44px;
   border-bottom:1px solid var(--border);
 }
-.wi:last-child{border-bottom:none;}
-.wi-date{font-size:12px;font-weight:600;width:44px;flex-shrink:0;color:var(--text);}
-.wi-dow{display:inline-block;font-size:10px;font-weight:400;color:var(--sub);margin-left:2px;}
-.dow-sat .wi-dow,.dow-sat{color:var(--blue)!important;}
-.dow-sun .wi-dow,.dow-sun{color:var(--red)!important;}
-.wi-icon{font-size:20px;width:26px;text-align:center;flex-shrink:0;}
-.wi-temp{font-size:12px;font-weight:600;flex:1;}
-.wi-tmax{color:var(--red);}
-.wi-tmin{color:var(--blue);margin-left:4px;}
-.wi-rain{
-  font-size:11px;color:var(--blue);
-  width:46px;text-align:right;flex-shrink:0;
-  display:flex;align-items:center;justify-content:flex-end;gap:2px;
-}
+.w-day:last-child{border-bottom:none;}
+.w-day-date{font-size:13px;font-weight:700;color:var(--text);width:96px;flex-shrink:0;}
+.w-day-date .dow{color:var(--mute);font-weight:600;margin-left:4px;}
+.w-day-icon{font-size:22px;width:40px;flex-shrink:0;}
+.w-day-temp{font-size:14px;font-weight:700;color:var(--text);width:110px;flex-shrink:0;}
+.w-day-temp .lo{color:var(--mute);font-weight:600;}
+.w-day-rain{font-size:13px;color:var(--accent);font-weight:700;margin-left:auto;}
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:1000px){
-  .venues{grid-template-columns:repeat(2,1fr);}
-  .wgrid{grid-template-columns:1fr 1fr;}
+/* ===== STATION ===== */
+.station{
+  height:172px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  overflow:hidden;
+  margin-bottom:20px;
 }
-@media(max-width:640px){
-  .venues{grid-template-columns:1fr;}
-  .wgrid{grid-template-columns:1fr;}
-  .hdr-btn{display:none;}
-  .main{padding:12px 12px 20px;}
-  .logo-main{font-size:22px;}
-  .clock-time{font-size:22px;}
+.station-main{
+  flex:1;padding:18px 22px;
+  display:flex;flex-direction:column;
 }
+.station-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:14px;}
+.station-chart{
+  flex:1;display:flex;align-items:flex-end;gap:10px;
+}
+.st-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+.st-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;justify-content:center;}
+.st-bar{width:24px;border-radius:8px 8px 0 0;background:var(--cong-0);min-height:6px;}
+.st-hour{font-size:11px;color:var(--mute);margin-top:6px;font-weight:600;}
+
+.station-side{
+  width:270px;flex-shrink:0;
+  padding:18px 22px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:var(--orange-bg);
+}
+.station-side-label{font-size:12px;color:var(--mute);font-weight:700;margin-bottom:6px;}
+.station-side-range{font-size:26px;font-weight:800;color:var(--orange);line-height:1.2;margin-bottom:8px;}
+.station-side-reason{font-size:12px;color:var(--sub);line-height:1.4;}
 </style>
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
-<header class="hdr">
-  <div class="logo-block">
-    <div class="logo-main">外苑エリア</div>
-    <div class="logo-sub">イベント・天気情報</div>
-  </div>
-  <div class="hdr-space"></div>
-  <div class="clock-block">
-    <div class="clock-date" id="hdr-date">----.--.-- ---</div>
-    <div class="clock-time" id="hdr-time">--:--</div>
-  </div>
-  <a class="hdr-btn" href="https://www.big6.gr.jp/index.php" target="_blank" rel="noopener">
-    <span class="bicon">⚾</span>
-    <span class="bname">明治大学<br>野球部</span>
-    <span class="bmeta">試合結果</span>
-  </a>
-  <a class="hdr-btn" href="https://baseball.omyutech.com/leagueTop.action?leagueId=339" target="_blank" rel="noopener">
-    <span class="bicon">🅐</span>
-    <span class="bname">亜細亜大学<br>野球部</span>
-    <span class="bmeta">試合結果</span>
-  </a>
-  <button class="hdr-refresh" id="refresh-btn" onclick="loadAll()" title="更新">↻</button>
-</header>
+<div class="viewport">
+<div class="canvas" id="canvas">
 
-<!-- ===== MAIN ===== -->
-<main class="main">
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-title">外苑エリア</div>
+      <div class="hdr-sub">イベント・天気情報</div>
+    </div>
+    <div class="hdr-center">
+      <div class="hdr-date" id="hdr-date">----.--.-- ---</div>
+      <div class="hdr-time" id="hdr-time">--:--</div>
+    </div>
+    <div class="hdr-right">
+      <a class="hdr-btn" href="https://www.big6.gr.jp/index.php" target="_blank" rel="noopener">
+        <span class="hdr-btn-text">明治大学<br>野球部<br>試合結果</span>
+        <span class="hdr-btn-arrow">›</span>
+      </a>
+      <a class="hdr-btn" href="https://baseball.omyutech.com/leagueTop.action?leagueId=339" target="_blank" rel="noopener">
+        <span class="hdr-btn-text">亜細亜大学<br>野球部<br>試合結果</span>
+        <span class="hdr-btn-arrow">›</span>
+      </a>
+      <div class="hdr-updated" id="hdr-updated">更新 --:--</div>
+    </div>
+  </header>
 
-  <div id="alert-container"></div>
+  <!-- EVENT CARDS -->
+  <section class="events-row" id="events-row"></section>
 
-  <!-- 施設カード -->
-  <div class="venues" id="venues">
-    <div class="vcard"><div class="vcard-top"><div class="vicon b">⚾</div><div class="vnames"><div class="vja">神宮球場</div><div class="ven">JINGU STADIUM</div></div></div><span class="sk" style="width:80%;height:14px;display:block;"></span><span class="sk" style="width:50%;height:28px;display:block;margin-top:8px;"></span></div>
-    <div class="vcard"><div class="vcard-top"><div class="vicon c">🎵</div><div class="vnames"><div class="vja">国立競技場</div><div class="ven">NATIONAL STADIUM</div></div></div><span class="sk" style="width:80%;height:14px;display:block;"></span><span class="sk" style="width:50%;height:28px;display:block;margin-top:8px;"></span></div>
-    <div class="vcard"><div class="vcard-top"><div class="vicon r">🏉</div><div class="vnames"><div class="vja">秩父宮ラグビー場</div><div class="ven">CHICHIBUNOMIYA</div></div></div><span class="sk" style="width:80%;height:14px;display:block;"></span><span class="sk" style="width:50%;height:28px;display:block;margin-top:8px;"></span></div>
-    <div class="vcard"><div class="vcard-top"><div class="vicon h">🏛</div><div class="vnames"><div class="vja">日本青年館ホール</div><div class="ven">NIPPON SEINENKAN HALL</div></div></div><span class="sk" style="width:80%;height:14px;display:block;"></span><span class="sk" style="width:50%;height:28px;display:block;margin-top:8px;"></span></div>
-  </div>
+  <!-- STATION CROWD -->
+  <section class="station">
+    <div class="station-main">
+      <div class="station-title">外苑前駅 混雑予測</div>
+      <div class="station-chart" id="station-chart"></div>
+    </div>
+    <div class="station-side">
+      <div class="station-side-label">混雑ピーク</div>
+      <div class="station-side-range" id="station-peak">――</div>
+      <div class="station-side-reason" id="station-reason"></div>
+    </div>
+  </section>
 
-  <!-- 天気 -->
-  <div class="wgrid">
-
-    <!-- 左：今日の天気 + 1時間ごと -->
+  <!-- WEATHER -->
+  <section class="weather-row">
     <div class="wcard">
-      <div class="wc-head">
-        <div>
-          <div class="wc-title">今日の天気</div>
-          <div class="wc-sub" id="w-datesub">外苑エリア</div>
-        </div>
-        <a class="wc-link" href="https://www.jma.go.jp/jma/index.html" target="_blank" rel="noopener">気象庁の天気予報を見る ↗</a>
+      <div class="wcard-head">
+        <div class="wcard-title">今日の天気</div>
+        <a class="wcard-link" href="https://www.jma.go.jp/jma/index.html" target="_blank" rel="noopener">気象庁の天気予報を見る ↗</a>
       </div>
       <div id="w-today-body">
-        <span class="sk" style="width:100%;height:90px;display:block;"></span>
-      </div>
-      <div style="margin-top:16px;">
-        <div class="hourly-section-title">1時間ごとの天気</div>
-        <div id="w-hourly-body">
-          <span class="sk" style="width:100%;height:70px;display:block;"></span>
+        <div class="w-today-top">
+          <div class="w-today-icon">–</div>
+          <div class="w-today-mid">
+            <div class="w-today-desc">–</div>
+            <div class="w-today-temp">–<span class="lo">/ –</span></div>
+          </div>
+          <div class="w-today-stats">
+            <div class="w-stat"><div class="w-stat-label">降水確率</div><div class="w-stat-val">–</div></div>
+            <div class="w-stat"><div class="w-stat-label">湿度</div><div class="w-stat-val">–</div></div>
+            <div class="w-stat"><div class="w-stat-label">風</div><div class="w-stat-val">–</div></div>
+          </div>
         </div>
+        <div class="w-hourly-title">1時間ごとの天気</div>
+        <div class="w-hourly-row" id="w-hourly-row"></div>
       </div>
     </div>
 
-    <!-- 中：雨雲レーダー -->
     <div class="wcard">
-      <div class="wc-head">
-        <div class="wc-title">雨雲レーダー</div>
-        <a class="wc-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener">気象庁の雨雲レーダーを見る ↗</a>
+      <div class="wcard-head">
+        <div class="wcard-title">雨雲レーダー</div>
+        <a class="wcard-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener">気象庁の雨雲レーダーを見る ↗</a>
       </div>
-      <div class="radar-placeholder">
+      <div class="radar-box">
         <div class="radar-pin">📍</div>
-        <div class="radar-label">外苑</div>
-        <div class="radar-legend">
-          <span>弱</span>
-          <div class="legend-bar"></div>
-          <span>強</span>
-        </div>
-        <div class="radar-time" id="radar-time">--- 現在</div>
-      </div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted);text-align:center;">
-        ※ リアルタイムレーダーは<a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" style="color:var(--blue);">気象庁サイト</a>でご確認ください
+        <div class="radar-label">外苑エリア</div>
+        <div class="radar-legend"><span>弱</span><div class="radar-legend-bar"></div><span>強</span></div>
+        <div class="radar-note">実況レーダーは気象庁サイトでご確認ください</div>
+        <div class="radar-time" id="radar-time">--:-- 現在</div>
       </div>
     </div>
 
-    <!-- 右：週間天気 -->
     <div class="wcard">
-      <div class="wc-head">
-        <div class="wc-title">週間天気</div>
-        <a class="wc-link" href="https://www.jma.go.jp/jma/index.html" target="_blank" rel="noopener">気象庁の週間天気予報を見る ↗</a>
+      <div class="wcard-head">
+        <div class="wcard-title">週間天気</div>
+        <a class="wcard-link" href="https://www.jma.go.jp/jma/index.html" target="_blank" rel="noopener">週間予報 ↗</a>
       </div>
-      <div id="w-weekly-body">
-        <span class="sk" style="width:100%;height:160px;display:block;"></span>
-      </div>
+      <div class="weekly-list" id="weekly-list"></div>
     </div>
+  </section>
 
-  </div><!-- /wgrid -->
-
-</main>
+</div>
+</div>
 
 <script>
 const LAT=35.6712, LON=139.7130;
@@ -409,25 +397,28 @@ const DAYS=['日','月','火','水','木','金','土'];
 const WDAYS_EN=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
 const VENUES=[
-  {id:'jingu',     ja:'神宮球場',         en:'JINGU STADIUM',               icon:'⚾',cls:'b',tag:'野球',   tc:'tb', url:'https://www.jingu-stadium.com/event/'},
-  {id:'kokuritsu', ja:'国立競技場',        en:'NATIONAL STADIUM',            icon:'🎵',cls:'c',tag:'ライブ', tc:'tc', url:'https://jns-e.com/event/'},
-  {id:'rugby',     ja:'秩父宮ラグビー場',  en:'CHICHIBUNOMIYA RUGBY STADIUM',icon:'🏉',cls:'r',tag:'ラグビー',tc:'tr',url:'https://www.jpnsport.go.jp/chichibunomiya/event/tabid/59/Default.aspx'},
-  {id:'hall',      ja:'日本青年館ホール',  en:'NIPPON SEINENKAN HALL',       icon:'🏛',cls:'h',tag:'公演',   tc:'th', url:'https://seinenkan-hall.com/category/performance'},
+  {id:'jingu',     ja:'神宮球場',        en:'JINGU STADIUM',       icon:'⚾', tag:'野球',    cls:'b', url:'https://www.jingu-stadium.com/event/', duration:3.5},
+  {id:'kokuritsu', ja:'国立競技場',      en:'NATIONAL STADIUM',    icon:'🎵', tag:'ライブ',  cls:'c', url:'https://jns-e.com/event/', duration:2},
+  {id:'rugby',     ja:'秩父宮ラグビー場', en:'CHICHIBUNOMIYA',      icon:'🏉', tag:'ラグビー', cls:'r', url:'https://www.jpnsport.go.jp/chichibunomiya/event/tabid/59/Default.aspx', duration:2},
+  {id:'hall',      ja:'日本青年館ホール', en:'NIPPON SEINENKAN HALL', icon:'🏛', tag:'公演',    cls:'h', url:'https://seinenkan-hall.com/category/performance', duration:2.5},
 ];
 
 function p2(n){return String(n).padStart(2,'0');}
 
-// 時計
+function fitCanvas(){
+  const s=Math.min(window.innerWidth/1920, window.innerHeight/1080);
+  document.getElementById('canvas').style.transform=`scale(${s})`;
+}
+window.addEventListener('resize',fitCanvas);
+fitCanvas();
+
 function tick(){
   const d=new Date();
   document.getElementById('hdr-date').textContent=`${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())} ${WDAYS_EN[d.getDay()]}`;
   document.getElementById('hdr-time').textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}`;
-  const rt=document.getElementById('radar-time');
-  if(rt) rt.textContent=`${d.getMonth()+1}/${d.getDate()} ${p2(d.getHours())}:${p2(d.getMinutes())} 現在`;
 }
-setInterval(tick,1000); tick();
+setInterval(tick,1000);tick();
 
-// 天気コード
 function wi(code,isDay){
   if(code===0)  return{icon:isDay?'☀️':'🌙',desc:'快晴'};
   if(code<=2)   return{icon:'⛅',desc:'くもり時々晴れ'};
@@ -441,175 +432,202 @@ function wi(code,isDay){
   return{icon:'🌤️',desc:'---'};
 }
 
-// 天気取得
-async function fetchWeather(){
-  const r=await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
-    `&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max`+
-    `&hourly=temperature_2m,weathercode,precipitation_probability,relativehumidity_2m,windspeed_10m,winddirection_10m`+
-    `&timezone=Asia%2FTokyo&forecast_days=7&wind_speed_unit=ms`
-  );
-  const d=await r.json();
-  const now=new Date();
-  const hr=now.getHours();
-  const todayStr=now.toISOString().slice(0,10);
-
-  const code=d.daily.weathercode[0];
-  const tmax=Math.round(d.daily.temperature_2m_max[0]);
-  const tmin=Math.round(d.daily.temperature_2m_min[0]);
-  const rp=d.daily.precipitation_probability_max[0];
-  const {icon,desc}=wi(code,hr>=6&&hr<18);
-
-  // 現在時刻インデックス
-  const ci=d.hourly.time.findIndex(t=>t===`${todayStr}T${p2(hr)}:00`);
-  const cIdx=ci>=0?ci:hr;
-  const humid=d.hourly.relativehumidity_2m?.[cIdx]??'--';
-  const wind=d.hourly.windspeed_10m?.[cIdx]??'--';
-  const wdir=d.hourly.winddirection_10m?.[cIdx]??0;
-  const dirLabel=['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'][Math.round(wdir/22.5)%16];
-
-  document.getElementById('w-datesub').textContent=`${now.getMonth()+1}/${now.getDate()} ${WDAYS_EN[now.getDay()]}　外苑エリア`;
-
-  // 今日の天気
-  document.getElementById('w-today-body').innerHTML=`
-    <div class="today-top">
-      <div class="today-icon">${icon}</div>
-      <div class="today-right">
-        <div class="today-desc">${desc}</div>
-        <div class="today-temp">
-          <span class="tmax">${tmax}<span class="tu">℃</span></span>
-          <span class="sep">/</span>
-          <span class="tmin">${tmin}<span class="tu">℃</span></span>
-        </div>
-      </div>
-    </div>
-    <div class="today-stats">
-      <div class="ts"><div class="ts-label">降水確率</div><div class="ts-icon">🌂</div><div class="ts-val">${rp}%</div></div>
-      <div class="ts"><div class="ts-label">湿度</div><div class="ts-icon">💧</div><div class="ts-val">${humid}%</div></div>
-      <div class="ts"><div class="ts-label">風</div><div class="ts-icon">🌬️</div><div class="ts-val">${dirLabel} ${wind}m/s</div></div>
-    </div>
-  `;
-
-  // 1時間ごと 11〜24時
-  const hrs=[];
-  for(let h=11;h<=24;h++){
-    const th=h===24?0:h;
-    const td=h===24?new Date(now.getFullYear(),now.getMonth(),now.getDate()+1).toISOString().slice(0,10):todayStr;
-    const idx=d.hourly.time.indexOf(`${td}T${p2(th)}:00`);
-    if(idx<0)continue;
-    const rph=d.hourly.precipitation_probability[idx]??0;
-    const tmp=Math.round(d.hourly.temperature_2m[idx]);
-    const {icon:hico}=wi(d.hourly.weathercode[idx],th>=6&&th<18);
-    const isCurrent=th===hr&&td===todayStr;
-    hrs.push(`<div class="hi${isCurrent?' now-h':''}"><div class="hi-h">${h}時</div><div class="hi-icon">${hico}</div><div class="hi-temp">${tmp}℃</div><div class="hi-rain">${rph}%</div></div>`);
-  }
-  document.getElementById('w-hourly-body').innerHTML=`<div class="hourly-wrap"><div class="hourly-list">${hrs.join('')}</div></div>`;
-
-  // 週間天気
-  const wks=d.daily.weathercode.map((wc,i)=>{
-    const dd=new Date(d.daily.time[i]);
-    const dow=DAYS[dd.getDay()];
-    const dow0=dd.getDay();
-    const dcls=dow0===0?'dow-sun':dow0===6?'dow-sat':'';
-    const mx=Math.round(d.daily.temperature_2m_max[i]);
-    const mn=Math.round(d.daily.temperature_2m_min[i]);
-    const rp2=d.daily.precipitation_probability_max[i];
-    const {icon:wico}=wi(wc,true);
-    return `<div class="wi ${dcls}"><div class="wi-date">${dd.getMonth()+1}/${dd.getDate()} <span class="wi-dow">${dow}</span></div><div class="wi-icon">${wico}</div><div class="wi-temp"><span class="wi-tmax">${mx}℃</span><span class="wi-tmin">${mn}℃</span></div><div class="wi-rain">🌂 ${rp2}%</div></div>`;
-  }).join('');
-  document.getElementById('w-weekly-body').innerHTML=`<div class="weekly">${wks}</div>`;
-}
-
-// 施設カード描画（ev は {time,name,sub} の配列）
-function renderCard(v,evs){
-  const list=Array.isArray(evs)?evs.filter(e=>e&&e.name):[];
-  const noEv=list.length===0;
-  const tag=noEv?`<span class="vtag tn">なし</span>`:`<span class="vtag ${v.tc}">${v.tag}</span>`;
-
-  let body='';
-  if(noEv){
-    body=`<div class="vnone">本日のイベントはありません</div>`;
-  } else {
-    body=`<div class="vevt-list">`+list.map(ev=>{
-      const time=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
-      return `<div class="vevt-item">
-        ${time?`<div class="vtime-big">${time[1]}:${time[2]}</div>`:''}
-        <div class="vevt-text"><div class="vevt-name">${ev.name}</div>${ev.sub?`<div class="vevt-sub">${ev.sub}</div>`:''}</div>
-      </div>`;
-    }).join('')+`</div>`;
-  }
-
-  return `<a class="vcard" href="${v.url}" target="_blank" rel="noopener">
-    <div class="vcard-top">
-      <div class="vicon ${v.cls}">${v.icon}</div>
-      <div class="vnames"><div class="vja">${v.ja}</div><div class="ven">${v.en}</div></div>
-      ${tag}
-    </div>
-    ${body}
-    <div class="vcard-arrow">›</div>
-  </a>`;
-}
-
-// イベント取得（events.json を読むだけ。生成は毎朝のスケジュール実行が担当）
-async function fetchEvents(){
-  const r=await fetch(`./events.json?t=${Date.now()}`,{cache:'no-store'});
-  if(!r.ok) throw new Error(`events.json ${r.status}`);
-  return r.json();
-}
-
-let lastLoad=0;
-
-async function loadAll(){
-  lastLoad=Date.now();
-  const btn=document.getElementById('refresh-btn');
-  btn.classList.add('spin');
-
-  // 天気（独立して動く）
-  try{await fetchWeather();}catch(e){console.error('天気エラー',e);}
-
-  // 施設スケルトン
-  document.getElementById('venues').innerHTML=VENUES.map(v=>`
-    <div class="vcard">
+function renderEvents(data){
+  const row=document.getElementById('events-row');
+  row.innerHTML=VENUES.map(v=>{
+    const list=(Array.isArray(data[v.id])?data[v.id]:[]).filter(e=>e&&e.name).slice(0,3);
+    const noEv=list.length===0;
+    const tag=noEv?`<span class="vtag none">なし</span>`:`<span class="vtag ${v.cls}">${v.tag}</span>`;
+    let body;
+    if(noEv){
+      body=`<div class="vnone">本日のイベントはありません</div>`;
+    } else {
+      body=`<div class="vevt-list">`+list.map(ev=>{
+        const m=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
+        return `<div class="vevt-item">
+          <div class="vevt-time ${v.cls} ${m?'':'tbd'}">${m?`${m[1]}:${m[2]}`:'時刻未定'}</div>
+          <div class="vevt-body">
+            <div class="vevt-name">${ev.name}</div>
+            ${ev.sub?`<div class="vevt-sub">${ev.sub}</div>`:''}
+          </div>
+        </div>`;
+      }).join('')+`</div>`;
+    }
+    return `<a class="vcard" href="${v.url}" target="_blank" rel="noopener">
       <div class="vcard-top">
         <div class="vicon ${v.cls}">${v.icon}</div>
         <div class="vnames"><div class="vja">${v.ja}</div><div class="ven">${v.en}</div></div>
+        ${tag}
       </div>
-      <span class="sk" style="width:85%;height:13px;display:block;"></span>
-      <span class="sk" style="width:50%;height:28px;display:block;margin-top:8px;"></span>
-    </div>`).join('');
-
-  // イベント
-  try{
-    const ev=await fetchEvents();
-    document.getElementById('venues').innerHTML=VENUES.map(v=>renderCard(v,ev[v.id])).join('');
-    const ac=document.getElementById('alert-container');
-    let html=(ev.alert&&ev.alert.trim())?`<div class="alert-banner">⚠️ ${ev.alert}</div>`:'';
-    if(ev.updated){
-      const u=new Date(ev.updated);
-      if(!isNaN(u)) html+=`<div style="font-size:11px;color:var(--muted);margin:2px 2px 10px;">イベント情報：${u.getMonth()+1}/${u.getDate()} ${p2(u.getHours())}:${p2(u.getMinutes())} 時点（毎朝自動更新／最新は各カードから公式サイトへ）</div>`;
-    }
-    ac.innerHTML=html;
-  }catch(e){
-    console.error('イベントエラー',e);
-    document.getElementById('venues').innerHTML=VENUES.map(v=>`
-      <a class="vcard" href="${v.url}" target="_blank" rel="noopener">
-        <div class="vcard-top"><div class="vicon ${v.cls}">${v.icon}</div><div class="vnames"><div class="vja">${v.ja}</div><div class="ven">${v.en}</div></div></div>
-        <div class="vnone" style="color:var(--sub);">クリックで公式サイトの最新イベント情報へ</div>
-        <div class="vcard-arrow">›</div>
-      </a>`).join('');
-  }
-
-  btn.classList.remove('spin');
+      ${body}
+      <div class="vcard-arrow ${v.cls}">›</div>
+    </a>`;
+  }).join('');
 }
 
-loadAll();
+function renderStation(data){
+  const HOURS=[12,13,14,15,16,17,18,19,20,21,22,23];
+  const weight=new Array(HOURS.length).fill(0);
+  const contributors={};
 
-// 天気は1時間ごとに自動更新（イベントも合わせて取り直す）
-setInterval(loadAll, 3600000);
-// タブに戻ったとき、前回更新から30分以上経っていれば更新
-document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden && Date.now()-lastLoad > 1800000) loadAll();
-});
+  VENUES.forEach(v=>{
+    const list=Array.isArray(data[v.id])?data[v.id]:[];
+    list.forEach(ev=>{
+      const m=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
+      if(!m)return;
+      const startMin=parseInt(m[1],10)*60+parseInt(m[2],10);
+      const endMin=startMin+v.duration*60;
+      const endHour=Math.floor(endMin/60);
+      HOURS.forEach((h,i)=>{
+        const dist=Math.abs(h-endHour);
+        if(dist===0){weight[i]+=1;(contributors[h]=contributors[h]||new Set()).add(v.ja);}
+        else if(dist===1){weight[i]+=0.4;(contributors[h]=contributors[h]||new Set()).add(v.ja);}
+      });
+    });
+  });
+
+  const max=Math.max(...weight,0);
+  const chart=document.getElementById('station-chart');
+
+  if(max<=0){
+    chart.innerHTML=HOURS.map(h=>`<div class="st-col"><div class="st-bar-wrap"><div class="st-bar" style="height:6px;background:var(--cong-0);"></div></div><div class="st-hour">${h}</div></div>`).join('');
+    document.getElementById('station-peak').textContent='――';
+    document.getElementById('station-reason').textContent='本日は算出に十分な情報がありません';
+    return;
+  }
+
+  chart.innerHTML=HOURS.map((h,i)=>{
+    const ratio=weight[i]/max;
+    const level = ratio>=0.85?3 : ratio>=0.5?2 : ratio>0.05?1 : 0;
+    const color=`var(--cong-${level})`;
+    const height=Math.max(6, Math.round(ratio*90));
+    return `<div class="st-col"><div class="st-bar-wrap"><div class="st-bar" style="height:${height}px;background:${color};"></div></div><div class="st-hour">${h}</div></div>`;
+  }).join('');
+
+  let peakIdx=0;
+  weight.forEach((w,i)=>{if(w>weight[peakIdx])peakIdx=i;});
+  const peakHour=HOURS[peakIdx];
+  const rangeStart=peakHour;
+  const rangeEnd=Math.min(peakHour+1,23);
+  document.getElementById('station-peak').textContent=`${p2(rangeStart)}:00–${p2(rangeEnd)}:00`;
+
+  const names=new Set();
+  [peakHour-1,peakHour,peakHour+1].forEach(h=>{if(contributors[h])contributors[h].forEach(n=>names.add(n));});
+  const nameList=[...names];
+  document.getElementById('station-reason').textContent = nameList.length>=2
+    ? `${nameList.join('・')}のイベント終了時間が重なるため`
+    : nameList.length===1
+      ? `${nameList[0]}のイベント終了時間帯のため`
+      : '';
+}
+
+async function loadEvents(){
+  try{
+    const r=await fetch(`./events.json?t=${Date.now()}`,{cache:'no-store'});
+    const data=await r.json();
+    renderEvents(data);
+    renderStation(data);
+    if(data.updated){
+      const u=new Date(data.updated);
+      if(!isNaN(u)) document.getElementById('hdr-updated').textContent=`更新 ${p2(u.getMonth()+1)}/${p2(u.getDate())} ${p2(u.getHours())}:${p2(u.getMinutes())}`;
+    }
+  }catch(e){
+    console.error('events error',e);
+    document.getElementById('events-row').innerHTML=VENUES.map(v=>`
+      <a class="vcard" href="${v.url}" target="_blank" rel="noopener">
+        <div class="vcard-top"><div class="vicon ${v.cls}">${v.icon}</div><div class="vnames"><div class="vja">${v.ja}</div><div class="ven">${v.en}</div></div></div>
+        <div class="vnone">取得できませんでした</div>
+        <div class="vcard-arrow ${v.cls}">›</div>
+      </a>`).join('');
+  }
+}
+
+async function loadWeather(){
+  try{
+    const r=await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
+      `&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max`+
+      `&hourly=temperature_2m,weathercode,precipitation_probability`+
+      `&timezone=Asia%2FTokyo&forecast_days=7&wind_speed_unit=ms&hourly=windspeed_10m,relativehumidity_2m`
+    );
+    const d=await r.json();
+    const now=new Date();
+    const hr=now.getHours();
+    const todayStr=now.toISOString().slice(0,10);
+
+    const code=d.daily.weathercode[0];
+    const tmax=Math.round(d.daily.temperature_2m_max[0]);
+    const tmin=Math.round(d.daily.temperature_2m_min[0]);
+    const rp=d.daily.precipitation_probability_max[0];
+    const {icon,desc}=wi(code,hr>=6&&hr<18);
+
+    const ci=d.hourly.time.findIndex(t=>t===`${todayStr}T${p2(hr)}:00`);
+    const cIdx=ci>=0?ci:hr;
+    const humid=d.hourly.relativehumidity_2m?.[cIdx]??'--';
+    const windRaw=d.hourly.windspeed_10m?.[cIdx];
+    const wind=windRaw==null?'--':Math.round(windRaw);
+
+    document.getElementById('w-today-body').innerHTML=`
+      <div class="w-today-top">
+        <div class="w-today-icon">${icon}</div>
+        <div class="w-today-mid">
+          <div class="w-today-desc">${desc}</div>
+          <div class="w-today-temp">${tmax}°<span class="lo">/ ${tmin}°</span></div>
+        </div>
+        <div class="w-today-stats">
+          <div class="w-stat"><div class="w-stat-label">降水確率</div><div class="w-stat-val">${rp}%</div></div>
+          <div class="w-stat"><div class="w-stat-label">湿度</div><div class="w-stat-val">${humid}%</div></div>
+          <div class="w-stat"><div class="w-stat-label">風</div><div class="w-stat-val">${wind}m/s</div></div>
+        </div>
+      </div>
+      <div class="w-hourly-title">1時間ごとの天気</div>
+      <div class="w-hourly-row" id="w-hourly-row"></div>
+    `;
+
+    const cells=[];
+    for(let k=0;k<11;k++){
+      const h=(hr+k)%24;
+      const dOffset=Math.floor((hr+k)/24);
+      const td=dOffset>0?new Date(now.getFullYear(),now.getMonth(),now.getDate()+dOffset).toISOString().slice(0,10):todayStr;
+      const idx=d.hourly.time.indexOf(`${td}T${p2(h)}:00`);
+      if(idx<0)continue;
+      const rph=d.hourly.precipitation_probability[idx]??0;
+      const tmp=Math.round(d.hourly.temperature_2m[idx]);
+      const {icon:hico}=wi(d.hourly.weathercode[idx],h>=6&&h<18);
+      cells.push(`<div class="w-hcell ${k===0?'now':''}"><div class="h-t">${h}時</div><div class="h-icon">${hico}</div><div class="h-temp">${tmp}°</div><div class="h-rain">${rph}%</div></div>`);
+    }
+    document.getElementById('w-hourly-row').innerHTML=cells.join('');
+
+    const weekly=d.daily.weathercode.map((wc,i)=>{
+      const dd=new Date(d.daily.time[i]);
+      const dow=DAYS[dd.getDay()];
+      const mx=Math.round(d.daily.temperature_2m_max[i]);
+      const mn=Math.round(d.daily.temperature_2m_min[i]);
+      const rp2=d.daily.precipitation_probability_max[i];
+      const {icon:wico}=wi(wc,true);
+      return `<div class="w-day">
+        <div class="w-day-date">${dd.getMonth()+1}/${dd.getDate()}<span class="dow">${dow}</span></div>
+        <div class="w-day-icon">${wico}</div>
+        <div class="w-day-temp">${mx}°<span class="lo"> / ${mn}°</span></div>
+        <div class="w-day-rain">${rp2}%</div>
+      </div>`;
+    }).join('');
+    document.getElementById('weekly-list').innerHTML=weekly;
+
+    document.getElementById('radar-time').textContent=`${p2(now.getHours())}:${p2(now.getMinutes())} 現在`;
+  }catch(e){
+    console.error('weather error',e);
+  }
+}
+
+loadEvents();
+loadWeather();
+setInterval(loadWeather,3600000);
+setInterval(loadEvents,3600000);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
 </script>
 </body>
 </html>

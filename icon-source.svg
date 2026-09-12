@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- background quadrants -->
+  <rect x="0"   y="0"   width="256" height="256" fill="#CFF3EF"/>
+  <rect x="256" y="0"   width="256" height="256" fill="#FFD3D8"/>
+  <rect x="0"   y="256" width="256" height="256" fill="#DFF5C6"/>
+  <rect x="256" y="256" width="256" height="256" fill="#FFD9A6"/>
+
+  <!-- TL: baseball -->
+  <g>
+    <circle cx="128" cy="128" r="82" fill="#FFFFFF" stroke="#5AD1C2" stroke-width="6"/>
+    <path d="M 92 58 Q 128 95 92 198" fill="none" stroke="#5AD1C2" stroke-width="4" stroke-dasharray="1 9" stroke-linecap="round"/>
+    <path d="M 164 58 Q 128 95 164 198" fill="none" stroke="#5AD1C2" stroke-width="4" stroke-dasharray="1 9" stroke-linecap="round"/>
+    <path d="M 92 58 Q 128 95 92 198" fill="none" stroke="#5AD1C2" stroke-width="1.5"/>
+    <path d="M 164 58 Q 128 95 164 198" fill="none" stroke="#5AD1C2" stroke-width="1.5"/>
+  </g>
+
+  <!-- TR: eighth notes -->
+  <g fill="#FF6F6F">
+    <ellipse cx="330" cy="182" rx="24" ry="18" transform="rotate(-18 330 182)"/>
+    <ellipse cx="404" cy="168" rx="24" ry="18" transform="rotate(-18 404 168)"/>
+    <rect x="350" y="88" width="9" height="98" rx="4"/>
+    <rect x="424" y="74" width="9" height="98" rx="4"/>
+    <path d="M 350 88 L 433 74 L 433 96 L 350 110 Z"/>
+  </g>
+
+  <!-- BL: rugby ball -->
+  <g transform="rotate(-28 128 384)">
+    <ellipse cx="128" cy="384" rx="92" ry="52" fill="#86C057"/>
+    <line x1="128" y1="350" x2="128" y2="418" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="108" y1="358" x2="108" y2="376" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="128" y1="358" x2="128" y2="376" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="148" y1="358" x2="148" y2="376" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="108" y1="392" x2="108" y2="410" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="128" y1="392" x2="128" y2="410" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="148" y1="392" x2="148" y2="410" stroke="#FFFFFF" stroke-width="4"/>
+  </g>
+
+  <!-- BR: hall / shrine building -->
+  <g fill="#F0904A">
+    <path d="M 320 356 Q 384 320 448 356 Q 420 344 384 344 Q 348 344 320 356 Z"/>
+    <path d="M 332 350 L 436 350 L 452 372 L 316 372 Z"/>
+    <rect x="336" y="372" width="96" height="70" />
+    <rect x="343" y="378" width="10" height="58" fill="#FFFFFF"/>
+    <rect x="365" y="378" width="10" height="58" fill="#FFFFFF"/>
+    <rect x="387" y="378" width="10" height="58" fill="#FFFFFF"/>
+    <rect x="409" y="378" width="10" height="58" fill="#FFFFFF"/>
+    <rect x="316" y="442" width="136" height="14" rx="3" fill="#FFFFFF"/>
+  </g>
+</svg>
