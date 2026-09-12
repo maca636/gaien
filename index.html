@@ -155,6 +155,11 @@ body{
 .vtime-big .unit{font-size:13px;font-weight:500;color:var(--sub);}
 .vtime-open{font-size:11px;color:var(--muted);margin-top:3px;}
 .vnone{font-size:13px;color:var(--muted);padding:6px 0;}
+.vevt-list{display:flex;flex-direction:column;gap:8px;}
+.vevt-item{display:flex;align-items:baseline;gap:8px;}
+.vevt-item .vtime-big{font-size:14px;flex-shrink:0;min-width:38px;}
+.vevt-text{min-width:0;}
+.vevt-sub{font-size:11px;color:var(--sub);margin-top:1px;}
 
 /* skeleton */
 .sk{display:block;border-radius:4px;background:linear-gradient(90deg,#edf0f7 25%,#f8faff 50%,#edf0f7 75%);background-size:200% 100%;animation:sh 1.2s infinite;}
@@ -515,27 +520,23 @@ async function fetchWeather(){
   document.getElementById('w-weekly-body').innerHTML=`<div class="weekly">${wks}</div>`;
 }
 
-// 施設カード描画
-function renderCard(v,ev){
-  const noEv=!ev||!ev.name||ev.name==='なし'||ev.name==='イベントなし';
+// 施設カード描画（ev は {time,name,sub} の配列）
+function renderCard(v,evs){
+  const list=Array.isArray(evs)?evs.filter(e=>e&&e.name):[];
+  const noEv=list.length===0;
   const tag=noEv?`<span class="vtag tn">なし</span>`:`<span class="vtag ${v.tc}">${v.tag}</span>`;
 
   let body='';
   if(noEv){
     body=`<div class="vnone">本日のイベントはありません</div>`;
   } else {
-    body=`<div class="vevt-name">${ev.name}</div>`;
-    if(ev.time){
-      const m=ev.time.match(/(\d{1,2}):(\d{2})/);
-      const openM=ev.time.match(/開場[^\d]*(\d{1,2}):(\d{2})/);
-      const label=ev.time.replace(/\d{1,2}:\d{2}/g,'').replace(/開場/g,'').trim()||'開始';
-      if(m){
-        body+=`<div class="vtime-big">${m[1]}:${m[2]} <span class="unit">${label}</span></div>`;
-        if(openM) body+=`<div class="vtime-open">開場 ${openM[1]}:${openM[2]}</div>`;
-      } else {
-        body+=`<div class="vtime-open">${ev.time}</div>`;
-      }
-    }
+    body=`<div class="vevt-list">`+list.map(ev=>{
+      const time=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
+      return `<div class="vevt-item">
+        ${time?`<div class="vtime-big">${time[1]}:${time[2]}</div>`:''}
+        <div class="vevt-text"><div class="vevt-name">${ev.name}</div>${ev.sub?`<div class="vevt-sub">${ev.sub}</div>`:''}</div>
+      </div>`;
+    }).join('')+`</div>`;
   }
 
   return `<a class="vcard" href="${v.url}" target="_blank" rel="noopener">
