@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>外苑エリア スタッフダッシュボード</title>
+<title>外苑駅イベント情報</title>
 <meta name="viewport" content="width=1920, initial-scale=1">
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="外苑ダッシュボード">
+<meta name="apple-mobile-web-app-title" content="外苑駅イベント情報">
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -94,6 +94,24 @@ html,body{
 .hdr-btn-text{font-size:12px;font-weight:600;line-height:1.4;color:var(--text);}
 .hdr-btn-arrow{font-size:18px;color:var(--mute);}
 .hdr-updated{font-size:12px;color:var(--mute);white-space:nowrap;padding-left:4px;}
+
+.refresh-btn{
+  width:32px;height:32px;flex-shrink:0;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--card);
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  color:var(--accent);
+  font-size:16px;
+  padding:0;
+  transition:background .15s;
+}
+.refresh-btn:hover{background:var(--accent-bg);}
+.refresh-btn:active{background:var(--accent-bg);}
+.refresh-btn.spin svg{animation:refresh-spin .7s linear infinite;}
+@keyframes refresh-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 /* ===== EVENT CARDS ===== */
 .events-row{
@@ -220,9 +238,17 @@ html,body{
 .w-stat-val{font-size:18px;font-weight:700;color:var(--text);}
 
 .w-hourly-title{font-size:12.5px;font-weight:700;color:var(--sub);margin-bottom:10px;}
-.w-hourly-row{display:flex;justify-content:space-between;flex:1;}
+.w-hourly-row{
+  display:flex;gap:6px;flex:1;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:thin;
+  padding-bottom:6px;
+}
+.w-hourly-row::-webkit-scrollbar{height:6px;}
+.w-hourly-row::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.w-hourly-row::-webkit-scrollbar-track{background:transparent;}
 .w-hcell{
-  width:74px;text-align:center;
+  width:60px;flex-shrink:0;text-align:center;
   display:flex;flex-direction:column;align-items:center;gap:5px;
   border-radius:14px;padding:6px 0;
 }
@@ -304,8 +330,8 @@ html,body{
   <!-- HEADER -->
   <header class="hdr">
     <div class="hdr-left">
-      <div class="hdr-title">外苑エリア</div>
-      <div class="hdr-sub">イベント・天気情報</div>
+      <div class="hdr-title">外苑駅</div>
+      <div class="hdr-sub">イベント情報</div>
     </div>
     <div class="hdr-center">
       <div class="hdr-date" id="hdr-date">----.--.-- ---</div>
@@ -320,6 +346,9 @@ html,body{
         <span class="hdr-btn-text">亜細亜大学<br>野球部<br>試合結果</span>
         <span class="hdr-btn-arrow">›</span>
       </a>
+      <button class="refresh-btn" id="refresh-btn" title="更新" aria-label="更新">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+      </button>
       <div class="hdr-updated" id="hdr-updated">更新 --:--</div>
     </div>
   </header>
@@ -585,16 +614,16 @@ async function loadWeather(){
     `;
 
     const cells=[];
-    for(let k=0;k<11;k++){
-      const h=(hr+k)%24;
-      const dOffset=Math.floor((hr+k)/24);
-      const td=dOffset>0?new Date(now.getFullYear(),now.getMonth(),now.getDate()+dOffset).toISOString().slice(0,10):todayStr;
-      const idx=d.hourly.time.indexOf(`${td}T${p2(h)}:00`);
+    for(let h=11;h<=24;h++){
+      const th=h===24?0:h;
+      const td=h===24?new Date(now.getFullYear(),now.getMonth(),now.getDate()+1).toISOString().slice(0,10):todayStr;
+      const idx=d.hourly.time.indexOf(`${td}T${p2(th)}:00`);
       if(idx<0)continue;
       const rph=d.hourly.precipitation_probability[idx]??0;
       const tmp=Math.round(d.hourly.temperature_2m[idx]);
-      const {icon:hico}=wi(d.hourly.weathercode[idx],h>=6&&h<18);
-      cells.push(`<div class="w-hcell ${k===0?'now':''}"><div class="h-t">${h}時</div><div class="h-icon">${hico}</div><div class="h-temp">${tmp}°</div><div class="h-rain">${rph}%</div></div>`);
+      const {icon:hico}=wi(d.hourly.weathercode[idx],th>=6&&th<18);
+      const isNow=th===hr&&td===todayStr;
+      cells.push(`<div class="w-hcell ${isNow?'now':''}"><div class="h-t">${h}時</div><div class="h-icon">${hico}</div><div class="h-temp">${tmp}°</div><div class="h-rain">${rph}%</div></div>`);
     }
     document.getElementById('w-hourly-row').innerHTML=cells.join('');
 
@@ -624,6 +653,17 @@ loadEvents();
 loadWeather();
 setInterval(loadWeather,3600000);
 setInterval(loadEvents,3600000);
+
+const refreshBtn=document.getElementById('refresh-btn');
+refreshBtn.addEventListener('click',async()=>{
+  if(refreshBtn.classList.contains('spin'))return;
+  refreshBtn.classList.add('spin');
+  try{
+    await Promise.all([loadEvents(),loadWeather()]);
+  }finally{
+    setTimeout(()=>refreshBtn.classList.remove('spin'),300);
+  }
+});
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

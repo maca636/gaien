@@ -1,6 +1,6 @@
 {
-  "name": "外苑エリア スタッフダッシュボード",
-  "short_name": "外苑ダッシュボード",
+  "name": "外苑駅イベント情報",
+  "short_name": "外苑駅イベント情報",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
