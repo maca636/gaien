@@ -184,6 +184,8 @@ html,body{
 .vevt-body{min-width:0;}
 .vevt-name{font-size:16px;font-weight:600;color:var(--text);line-height:1.3;}
 .vevt-sub{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.3;}
+.vevt-cat{font-size:12px;font-weight:600;color:var(--sub);line-height:1.3;}
+.vevt-match{font-size:18px;font-weight:800;color:var(--text);line-height:1.3;margin-top:2px;}
 .vnone{
   flex:1;display:flex;align-items:center;justify-content:center;
   font-size:14px;color:var(--mute);
@@ -473,12 +475,13 @@ function renderEvents(data){
     } else {
       body=`<div class="vevt-list">`+list.map(ev=>{
         const m=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
+        const isMatch=ev.sub&&/\svs\s/.test(ev.sub);
+        const inner=isMatch
+          ? `<div class="vevt-cat">${ev.name}</div><div class="vevt-match">${ev.sub}</div>`
+          : `<div class="vevt-name">${ev.name}</div>${ev.sub?`<div class="vevt-sub">${ev.sub}</div>`:''}`;
         return `<div class="vevt-item">
           <div class="vevt-time ${v.cls} ${m?'':'tbd'}">${m?`${m[1]}:${m[2]}`:'時刻未定'}</div>
-          <div class="vevt-body">
-            <div class="vevt-name">${ev.name}</div>
-            ${ev.sub?`<div class="vevt-sub">${ev.sub}</div>`:''}
-          </div>
+          <div class="vevt-body">${inner}</div>
         </div>`;
       }).join('')+`</div>`;
     }
