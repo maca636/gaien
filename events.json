@@ -1,8 +1,10 @@
 {
-  "jingu": [],
+  "jingu": [
+    { "time": "18:00", "name": "プロ野球 公式戦", "sub": "ヤクルト vs DeNA" }
+  ],
   "kokuritsu": [],
   "rugby": [],
   "hall": [],
   "alert": "",
-  "updated": "2026-09-16T05:39:42+09:00"
+  "updated": "2026-09-17T05:40:31+09:00"
 }
