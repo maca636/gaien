@@ -467,11 +467,12 @@ function renderEvents(data){
   const row=document.getElementById('events-row');
   row.innerHTML=VENUES.map(v=>{
     const list=(Array.isArray(data[v.id])?data[v.id]:[]).filter(e=>e&&e.name).slice(0,3);
+    const failed=data[v.id]===null;
     const noEv=list.length===0;
-    const tag=noEv?`<span class="vtag none">なし</span>`:`<span class="vtag ${v.cls}">${v.tag}</span>`;
+    const tag=noEv?`<span class="vtag none">${failed?'未取得':'なし'}</span>`:`<span class="vtag ${v.cls}">${v.tag}</span>`;
     let body;
     if(noEv){
-      body=`<div class="vnone">本日のイベントはありません</div>`;
+      body=`<div class="vnone">${failed?'取得できませんでした（カードから公式サイトで確認）':'本日のイベントはありません'}</div>`;
     } else {
       body=`<div class="vevt-list">`+list.map(ev=>{
         const m=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
@@ -503,7 +504,7 @@ function renderStation(data){
   const contributors={};
 
   VENUES.forEach(v=>{
-    const list=Array.isArray(data[v.id])?data[v.id]:[];
+    const list=(Array.isArray(data[v.id])?data[v.id]:[]).filter(e=>!(e&&e.sub&&e.sub.includes('中止')));
     list.forEach(ev=>{
       const m=(ev.time||'').match(/(\d{1,2}):(\d{2})/);
       if(!m)return;
@@ -557,10 +558,23 @@ async function loadEvents(){
   try{
     const r=await fetch(`./events.json?t=${Date.now()}`,{cache:'no-store'});
     const data=await r.json();
+    let latest=data.updated;
+    try{
+      const jr=await fetch(`./jingu.json?t=${Date.now()}`,{cache:'no-store'});
+      const j=await jr.json();
+      const fresh=Date.now()-new Date(j.updated).getTime()<36*3600*1000;
+      const t=new Date();
+      const today=`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;
+      data.jingu=fresh?(j.days&&j.days[today]||[]):null;
+      if(fresh&&(!latest||new Date(j.updated)>new Date(latest)))latest=j.updated;
+    }catch(e){
+      console.error('jingu error',e);
+      data.jingu=null;
+    }
     renderEvents(data);
     renderStation(data);
-    if(data.updated){
-      const u=new Date(data.updated);
+    if(latest){
+      const u=new Date(latest);
       if(!isNaN(u)) document.getElementById('hdr-updated').textContent=`更新 ${p2(u.getMonth()+1)}/${p2(u.getDate())} ${p2(u.getHours())}:${p2(u.getMinutes())}`;
     }
   }catch(e){
