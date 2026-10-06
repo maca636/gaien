@@ -1,14 +1,7 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-10-06T12:06:12+09:00",
+ "updated": "2026-10-07T08:38:30+09:00",
  "days": {
-  "2026-10-06": [
-   {
-    "time": "13:00",
-    "name": "東京六大学野球秋季リーグ戦",
-    "sub": "明治大学 vs 早稲田大学"
-   }
-  ],
   "2026-10-07": [
    {
     "time": "13:00",
