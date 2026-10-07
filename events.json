@@ -3,9 +3,8 @@
   "kokuritsu": [],
   "rugby": [],
   "hall": [
-    { "time": "13:30", "name": "舞台『THE ALUCARD SHOW』", "sub": "開場12:45" },
-    { "time": "18:30", "name": "舞台『THE ALUCARD SHOW』", "sub": "開場17:45" }
+    { "time": "13:30", "name": "舞台『THE ALUCARD SHOW』", "sub": "開場12:45" }
   ],
   "alert": "",
-  "updated": "2026-10-07T05:55:00+09:00"
+  "updated": "2026-10-08T05:47:15+09:00"
 }
