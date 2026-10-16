@@ -2,7 +2,9 @@
   "jingu": [],
   "kokuritsu": [],
   "rugby": [],
-  "hall": [],
+  "hall": [
+    { "time": "12:30", "name": "THE ALUCARD SHOW", "sub": "開場11:45" }
+  ],
   "alert": "",
-  "updated": "2026-10-16T05:47:30+09:00"
+  "updated": "2026-10-17T05:47:51+09:00"
 }
