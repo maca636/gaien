@@ -56,6 +56,7 @@ html,body{
 }
 
 .canvas{
+  position:relative;
   width:1920px;height:1080px;
   flex-shrink:0;
   background:var(--bg);
@@ -82,6 +83,7 @@ html,body{
 
 .hdr-right{justify-self:end;display:flex;align-items:center;gap:12px;}
 .hdr-btn{
+  font-family:inherit;cursor:pointer;text-align:left;
   width:190px;height:64px;
   border-radius:16px;
   border:1px solid var(--border);
@@ -322,6 +324,57 @@ html,body{
 .station-side-label{font-size:12px;color:var(--mute);font-weight:700;margin-bottom:6px;}
 .station-side-range{font-size:26px;font-weight:800;color:var(--orange);line-height:1.2;margin-bottom:8px;}
 .station-side-reason{font-size:12px;color:var(--sub);line-height:1.4;}
+
+/* ===== RESULTS PANEL ===== */
+.rs-overlay{position:absolute;inset:0;z-index:50;background:rgba(34,48,74,.40);display:none;align-items:center;justify-content:center;}
+.rs-overlay.open{display:flex;}
+.rs-panel{width:1440px;height:880px;background:var(--card);border-radius:28px;box-shadow:0 24px 70px rgba(34,48,74,.30);display:flex;flex-direction:column;overflow:hidden;}
+.rs-head{display:flex;align-items:center;gap:22px;padding:22px 28px 0;}
+.rs-title{font-size:26px;font-weight:800;color:var(--text);white-space:nowrap;}
+.rs-tabs{display:flex;gap:10px;flex:1;}
+.rs-tab{font-family:inherit;border:1px solid var(--border);background:var(--bg);border-radius:999px;padding:10px 24px;font-size:17px;font-weight:700;color:var(--sub);cursor:pointer;}
+.rs-tab.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.rs-close{font-family:inherit;width:46px;height:46px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:22px;line-height:1;color:var(--sub);cursor:pointer;}
+.rs-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 500px;gap:28px;padding:20px 28px 22px;}
+.rs-left{display:flex;flex-direction:column;min-height:0;}
+.rs-right{display:flex;flex-direction:column;gap:16px;min-height:0;overflow-y:auto;scrollbar-width:thin;}
+.rs-sec{font-size:14px;font-weight:700;color:var(--mute);letter-spacing:.05em;margin-bottom:8px;}
+.rs-next{display:flex;gap:12px;margin-bottom:18px;}
+.rs-next-card{flex:1;min-width:0;background:var(--accent-bg);border-radius:16px;padding:12px 16px;}
+.rs-next-date{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.rs-next-match{font-size:19px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rs-next-note{font-size:12px;color:var(--sub);margin-top:2px;}
+.rs-next-empty{font-size:14px;color:var(--mute);padding:14px 0;}
+.rs-list{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:8px;padding-right:6px;}
+.rs-row{display:grid;grid-template-columns:104px 74px 1fr 44px;align-items:center;gap:12px;background:var(--bg);border-radius:14px;padding:11px 16px;flex-shrink:0;}
+.rs-date{font-size:15px;font-weight:700;color:var(--sub);}
+.rs-lg{font-size:12px;font-weight:700;border-radius:999px;padding:3px 0;text-align:center;}
+.rs-lg.big6{background:var(--blue-bg);color:var(--blue);}
+.rs-lg.tohto{background:var(--purple-bg);color:var(--purple);}
+.rs-lg.npb{background:var(--orange-bg);color:var(--orange);}
+.rs-match{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;gap:6px;}
+.rs-team{font-size:20px;font-weight:600;color:var(--sub);}
+.rs-team.a{text-align:right;}
+.rs-team.win{font-weight:800;color:var(--text);}
+.rs-team.me{color:var(--accent);}
+.rs-score{font-size:28px;font-weight:800;color:var(--text);text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.rs-chip{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;}
+.rs-chip.w{background:var(--green-bg);color:var(--green);}
+.rs-chip.l{background:#FDECEA;color:var(--cong-3);}
+.rs-chip.d{background:var(--cong-0);color:var(--sub);}
+.rs-empty{padding:40px 0;text-align:center;color:var(--mute);font-size:16px;}
+.rs-sum{background:var(--accent-bg);border-radius:18px;padding:16px 20px;display:flex;align-items:baseline;gap:14px;}
+.rs-sum-big{font-size:34px;font-weight:800;color:var(--text);}
+.rs-sum-sub{font-size:14px;color:var(--sub);font-weight:600;}
+.rs-tbl{width:100%;border-collapse:collapse;}
+.rs-tbl caption{text-align:left;font-size:14px;font-weight:700;color:var(--mute);letter-spacing:.05em;padding-bottom:6px;}
+.rs-tbl th{font-size:12px;font-weight:700;color:var(--mute);text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);}
+.rs-tbl td{font-size:16px;font-weight:600;color:var(--text);text-align:right;padding:8px 8px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.rs-tbl th:nth-child(2),.rs-tbl td:nth-child(2){text-align:left;}
+.rs-tbl th:first-child,.rs-tbl td:first-child{text-align:center;width:36px;color:var(--mute);}
+.rs-tbl tr.me td{background:var(--accent-bg);color:var(--accent);font-weight:800;}
+.rs-note{font-size:12px;color:var(--mute);line-height:1.5;}
+.rs-link{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:15px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:9px 18px;background:var(--card);}
 </style>
 </head>
 <body>
@@ -340,14 +393,14 @@ html,body{
       <div class="hdr-time" id="hdr-time">--:--</div>
     </div>
     <div class="hdr-right">
-      <a class="hdr-btn" href="https://www.big6.gr.jp/index.php" target="_blank" rel="noopener">
+      <button type="button" class="hdr-btn" data-rs="meiji">
         <span class="hdr-btn-text">明治大学<br>野球部<br>試合結果</span>
         <span class="hdr-btn-arrow">›</span>
-      </a>
-      <a class="hdr-btn" href="https://baseball.omyutech.com/leagueTop.action?leagueId=339" target="_blank" rel="noopener">
+      </button>
+      <button type="button" class="hdr-btn" data-rs="asia">
         <span class="hdr-btn-text">亜細亜大学<br>野球部<br>試合結果</span>
         <span class="hdr-btn-arrow">›</span>
-      </a>
+      </button>
       <button class="refresh-btn" id="refresh-btn" title="更新" aria-label="更新">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
       </button>
@@ -419,6 +472,21 @@ html,body{
     </div>
   </section>
 
+
+  <!-- RESULTS PANEL -->
+  <div class="rs-overlay" id="rs-overlay" aria-hidden="true">
+    <div class="rs-panel" role="dialog" aria-label="試合結果">
+      <div class="rs-head">
+        <div class="rs-title">神宮の試合結果</div>
+        <div class="rs-tabs" id="rs-tabs"></div>
+        <button type="button" class="rs-close" id="rs-close" aria-label="閉じる">✕</button>
+      </div>
+      <div class="rs-body">
+        <div class="rs-left" id="rs-left"></div>
+        <div class="rs-right" id="rs-right"></div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -666,6 +734,132 @@ async function loadWeather(){
   }
 }
 
+
+/* ===== 試合結果パネル ===== */
+const RS_TABS={
+  meiji:{label:'明治大学',team:'明大',lg:'big6',url:'https://www.big6.gr.jp/index.php',urlLabel:'東京六大学野球連盟 公式サイト'},
+  asia:{label:'亜細亜大学',team:'亜細亜大',lg:'tohto',url:'https://baseball.omyutech.com/leagueTop.action?leagueId=339',urlLabel:'東都大学野球連盟（一球速報.com）'},
+  all:{label:'神宮の試合すべて',team:null,lg:null,url:'https://www.jingu-stadium.com/event/',urlLabel:'明治神宮野球場 公式サイト'},
+};
+const RS_LG={big6:'六大学',tohto:'東都',npb:'プロ野球'};
+const RS_LG_NAME={big6:'東京六大学野球 秋季リーグ',tohto:'東都大学野球 秋季リーグ'};
+const rs={data:null,tab:'meiji',open:false};
+
+function rsToday(){const t=new Date();return `${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;}
+function rsDate(iso){const [y,m,d]=iso.split('-').map(Number);return `${m}/${d}(${DAYS[new Date(y,m-1,d).getDay()]})`;}
+
+function rsStandings(lg){
+  const games=rs.data.games.filter(g=>g.lg===lg);
+  const T={};
+  const get=n=>T[n]||(T[n]={n,w:0,l:0,d:0,pt:0});
+  const series={};
+  games.forEach(g=>{
+    get(g.a);get(g.b);
+    if(g.st!=='final')return;
+    const k=[g.a,g.b].sort().join('|');
+    const sr=series[k]||(series[k]={});
+    if(g.sa>g.sb){get(g.a).w++;get(g.b).l++;sr[g.a]=(sr[g.a]||0)+1;}
+    else if(g.sa<g.sb){get(g.b).w++;get(g.a).l++;sr[g.b]=(sr[g.b]||0)+1;}
+    else{get(g.a).d++;get(g.b).d++;}
+  });
+  Object.entries(series).forEach(([k,sr])=>{
+    const [x,y]=k.split('|');
+    const wx=sr[x]||0,wy=sr[y]||0;
+    if(wx>=2&&wx>wy)T[x].pt++;
+    else if(wy>=2&&wy>wx)T[y].pt++;
+  });
+  const rate=t=>t.w+t.l?t.w/(t.w+t.l):-1;
+  return Object.values(T).sort((a,b)=>b.pt-a.pt||rate(b)-rate(a)||b.w-a.w);
+}
+function rsRate(t){return t.w+t.l?(t.w/(t.w+t.l)).toFixed(3).replace(/^0/,''):'-';}
+function rsTable(lg,me){
+  const rows=rsStandings(lg).map((t,i)=>`<tr class="${t.n===me?'me':''}"><td>${i+1}</td><td>${t.n}</td><td>${t.pt}</td><td>${t.w}</td><td>${t.l}</td><td>${t.d}</td><td>${rsRate(t)}</td></tr>`).join('');
+  return `<table class="rs-tbl"><caption>${RS_LG_NAME[lg]} 順位</caption><thead><tr><th></th><th>チーム</th><th>勝点</th><th>勝</th><th>敗</th><th>分</th><th>勝率</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function rsRow(g,me){
+  const win=g.sa>g.sb?'a':g.sa<g.sb?'b':'';
+  let chip='<span></span>';
+  if(me){
+    const mine=g.a===me?g.sa:g.sb, opp=g.a===me?g.sb:g.sa;
+    chip=mine>opp?'<span class="rs-chip w">○</span>':mine<opp?'<span class="rs-chip l">●</span>':'<span class="rs-chip d">△</span>';
+  }
+  const cls=(side)=>`rs-team ${side} ${win===side?'win':''} ${me&&(side==='a'?g.a:g.b)===me?'me':''}`;
+  return `<div class="rs-row">
+    <div class="rs-date">${rsDate(g.d)}</div>
+    <div class="rs-lg ${g.lg}">${RS_LG[g.lg]}</div>
+    <div class="rs-match"><div class="${cls('a')}">${g.a}</div><div class="rs-score">${g.sa} - ${g.sb}</div><div class="${cls('b')}">${g.b}</div></div>
+    ${chip}
+  </div>`;
+}
+
+function renderResults(){
+  const cfg=RS_TABS[rs.tab];
+  document.getElementById('rs-tabs').innerHTML=Object.entries(RS_TABS).map(([k,v])=>`<button type="button" class="rs-tab ${k===rs.tab?'on':''}" data-tab="${k}">${v.label}</button>`).join('');
+  const left=document.getElementById('rs-left'),right=document.getElementById('rs-right');
+  if(!rs.data){
+    left.innerHTML='<div class="rs-empty">読み込み中…（表示されない場合は更新ボタンを押してください）</div>';
+    right.innerHTML='';
+    return;
+  }
+  const today=rsToday(),me=cfg.team;
+  const mine=rs.data.games.filter(g=>!me||g.a===me||g.b===me);
+  const upcoming=mine.filter(g=>g.st==='sched'&&g.d>=today).slice(0,3);
+  const finals=mine.filter(g=>g.st==='final').sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:(a.t<b.t?1:-1));
+
+  const next=upcoming.length?upcoming.map(g=>`
+    <div class="rs-next-card">
+      <div class="rs-next-date">${g.d===today?'本日':rsDate(g.d)} ${g.t}</div>
+      <div class="rs-next-match">${g.a} vs ${g.b}</div>
+      <div class="rs-next-note">${RS_LG[g.lg]}${g.d===today?'・結果待ち':''}</div>
+    </div>`).join(''):'<div class="rs-next-empty">今後の予定はありません</div>';
+
+  left.innerHTML=`<div class="rs-sec">今後の予定</div><div class="rs-next">${next}</div>
+    <div class="rs-sec">試合結果（新しい順）</div>
+    <div class="rs-list">${finals.length?finals.map(g=>rsRow(g,me)).join(''):'<div class="rs-empty">まだ結果がありません</div>'}</div>`;
+
+  let r='';
+  if(me){
+    const t=rsStandings(cfg.lg).find(x=>x.n===me)||{w:0,l:0,d:0};
+    r+=`<div class="rs-sum"><div class="rs-sum-big">${t.w}勝 ${t.l}敗${t.d?` ${t.d}分`:''}</div><div class="rs-sum-sub">今季 ${RS_LG_NAME[cfg.lg]}</div></div>`;
+    r+=rsTable(cfg.lg,me);
+  }else{
+    r+=rsTable('big6',null)+rsTable('tohto',null);
+  }
+  r+=`<div class="rs-note">神宮球場で行われた試合の結果です（六大学・東都1部は全試合が神宮開催）。中止の試合は表示していません。勝点は2勝先勝のカードで勝ち越したチームに1点として集計しており、公式の順位表と表記が異なる場合があります。</div>`;
+  const u=new Date(rs.data.updated);
+  r+=`<a class="rs-link" href="${cfg.url}" target="_blank" rel="noopener">${cfg.urlLabel} ›</a>`;
+  r+=`<div class="rs-note">データ: 明治神宮野球場 公式スケジュール${isNaN(u)?'':`（${p2(u.getMonth()+1)}/${p2(u.getDate())} ${p2(u.getHours())}:${p2(u.getMinutes())} 更新）`}</div>`;
+  right.innerHTML=r;
+}
+
+async function loadResults(){
+  try{
+    const r=await fetch(`./results.json?t=${Date.now()}`,{cache:'no-store'});
+    rs.data=await r.json();
+  }catch(e){console.error('results error',e);}
+  if(rs.open)renderResults();
+}
+function openResults(tab){
+  rs.tab=tab;rs.open=true;
+  const o=document.getElementById('rs-overlay');
+  o.classList.add('open');o.setAttribute('aria-hidden','false');
+  renderResults();
+  loadResults();
+}
+function closeResults(){
+  rs.open=false;
+  const o=document.getElementById('rs-overlay');
+  o.classList.remove('open');o.setAttribute('aria-hidden','true');
+}
+document.querySelectorAll('[data-rs]').forEach(b=>b.addEventListener('click',()=>openResults(b.dataset.rs)));
+document.getElementById('rs-close').addEventListener('click',closeResults);
+document.getElementById('rs-overlay').addEventListener('click',e=>{if(e.target.id==='rs-overlay')closeResults();});
+document.getElementById('rs-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){rs.tab=b.dataset.tab;renderResults();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&rs.open)closeResults();});
+loadResults();
+setInterval(loadResults,3600000);
+
 loadEvents();
 loadWeather();
 setInterval(loadWeather,3600000);
@@ -676,7 +870,7 @@ refreshBtn.addEventListener('click',async()=>{
   if(refreshBtn.classList.contains('spin'))return;
   refreshBtn.classList.add('spin');
   try{
-    await Promise.all([loadEvents(),loadWeather()]);
+    await Promise.all([loadEvents(),loadWeather(),loadResults()]);
   }finally{
     setTimeout(()=>refreshBtn.classList.remove('spin'),300);
   }

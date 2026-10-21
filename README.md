@@ -49,3 +49,12 @@
 | `hall` | 日本青年館ホール | https://seinenkan-hall.com/category/performance |
 
 神宮球場の大学野球（東京六大学・東都）は球場サイトに載らないため、各リーグの公式サイトも確認すること。
+
+## 神宮球場の日程と試合結果（自動・AI不使用）
+
+神宮球場だけは Web検索ではなく、公式サイトのスケジュールJSON（`https://www.jingu-stadium.com/event/json/data.json`）を直接読んでいる。
+
+- `scripts/jingu_build.py` が `jingu.json`（今日以降120日分の日程）と `results.json`（今季の試合結果・予定）を生成する。
+- `.github/workflows/update-jingu.yml`（GitHub Actions）が毎日 5:00 / 16:00 / 22:30（JST）に実行し、差分があればコミットしてPagesを再ビルドする。AI（トークン）は使わない。
+- 画面の神宮カードは `jingu.json`、ヘッダーの「試合結果」ボタンで開くパネルは `results.json` を表示する。順位表の勝点は「2勝先勝のカードで勝ち越したチームに1点」として集計した値で、公式と表記が異なる場合がある。
+- `events.json` の `jingu` は常に `[]`（毎朝のルーティンは神宮を調べない）。

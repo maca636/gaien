@@ -28,6 +28,68 @@ def team_name(raw):
     return TEAM_FULL.get(name, name)
 
 
+PRO_SHORT = {
+    "東京ヤクルト": "ヤクルト", "北海道日本ハム": "日本ハム", "千葉ロッテ": "ロッテ",
+    "埼玉西武": "西武", "横浜DeNA": "DeNA",
+}
+SCORE_RE = re.compile(r"^\s*(\d+)\s*-\s*(\d+)\s*$")
+
+
+def short_team(raw):
+    m = re.search(r"alt=['\"]([^'\"]*)['\"]", raw)
+    name = (m.group(1) if m else re.sub(r"<[^>]+>", "", raw)).strip()
+    return PRO_SHORT.get(name, name)
+
+
+def build_results(data, today):
+    start = datetime(today.year, 9 if today.month >= 8 else 3, 1).date()
+    end = today + timedelta(days=30)
+    games = []
+    for y, m, d, blog_cat, e in iter_events(data):
+        try:
+            day = datetime(y, m, d).date()
+        except ValueError:
+            continue
+        if not (start <= day <= end):
+            continue
+        cat = e.get("category", "")
+        if blog_cat == "A":
+            lg = "npb"
+        elif blog_cat == "B" and "六大学" in cat:
+            lg = "big6"
+        elif blog_cat == "B" and "東都" in cat:
+            lg = "tohto"
+        else:
+            continue
+        for g in e.get("value") or []:
+            if not (g.get("team1") and g.get("team2")):
+                continue
+            item = {"d": day.isoformat(), "t": e.get("time") or "", "lg": lg,
+                    "a": short_team(g["team1"]), "b": short_team(g["team2"]),
+                    "sa": None, "sb": None, "st": "sched"}
+            sm = SCORE_RE.match(g.get("result") or "")
+            if g.get("cancel") == "true":
+                item["st"] = "cancel"
+            elif sm:
+                item["st"], item["sa"], item["sb"] = "final", int(sm.group(1)), int(sm.group(2))
+            games.append(item)
+    games.sort(key=lambda x: (x["d"], x["t"] or "99:99"))
+    return start.isoformat(), games
+
+
+def write_if_changed(path, payload, same):
+    try:
+        with open(path, encoding="utf-8") as f:
+            if same(json.load(f)):
+                return False
+    except (FileNotFoundError, ValueError):
+        pass
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=1)
+        f.write("\n")
+    return True
+
+
 def fetch():
     req = urllib.request.Request(SRC, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=60) as r:
@@ -87,19 +149,13 @@ def main():
         for _, _, evs in sorted(days[k], key=lambda x: (x[0], x[1])):
             items.extend(evs)
         result_days[k] = items
-    out = {"source": SRC, "updated": datetime.now(JST).isoformat(timespec="seconds"), "days": result_days}
-    try:
-        with open(OUT, encoding="utf-8") as f:
-            old = json.load(f)
-        if old.get("days") == out["days"]:
-            print("no change")
-            return
-    except (FileNotFoundError, ValueError):
-        pass
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
-        f.write("\n")
-    print(f"wrote {OUT}: {len(result_days)} days")
+    now = datetime.now(JST).isoformat(timespec="seconds")
+    out = {"source": SRC, "updated": now, "days": result_days}
+    a = write_if_changed("jingu.json", out, lambda old: old.get("days") == out["days"])
+    season_start, games = build_results(data, today)
+    res = {"source": SRC, "updated": now, "season_start": season_start, "games": games}
+    b = write_if_changed("results.json", res, lambda old: old.get("games") == games)
+    print(f"jingu.json: {'wrote ' + str(len(result_days)) + ' days' if a else 'no change'} / results.json: {'wrote ' + str(len(games)) + ' games' if b else 'no change'}")
 
 
 if __name__ == "__main__":
