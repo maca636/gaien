@@ -1,6 +1,6 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-10-22T03:09:09+09:00",
+ "updated": "2026-10-23T03:05:55+09:00",
  "season_start": "2026-09-01",
  "games": [
   {
@@ -989,9 +989,9 @@
    "lg": "tohto",
    "a": "立正大",
    "b": "東洋大",
-   "sa": null,
-   "sb": null,
-   "st": "sched"
+   "sa": 4,
+   "sb": 5,
+   "st": "final"
   },
   {
    "d": "2026-10-22",
@@ -999,9 +999,9 @@
    "lg": "tohto",
    "a": "國學院大",
    "b": "青学大",
-   "sa": null,
-   "sb": null,
-   "st": "sched"
+   "sa": 1,
+   "sb": 8,
+   "st": "final"
   },
   {
    "d": "2026-10-24",
