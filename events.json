@@ -2,7 +2,9 @@
   "jingu": [],
   "kokuritsu": [],
   "rugby": [],
-  "hall": [],
+  "hall": [
+    { "time": "18:00", "name": "ROBOT ANIME SYMPHONIC CONCERT STARCHILD 45th ANNIVERSARY", "sub": "開場17:00" }
+  ],
   "alert": "",
-  "updated": "2026-10-23T05:34:16+09:00"
+  "updated": "2026-10-24T05:45:00+09:00"
 }
