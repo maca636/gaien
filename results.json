@@ -1,6 +1,6 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-10-26T02:08:21+09:00",
+ "updated": "2026-10-28T03:48:47+09:00",
  "season_start": "2026-09-01",
  "games": [
   {
@@ -1032,6 +1032,16 @@
    "sa": null,
    "sb": null,
    "st": "cancel"
+  },
+  {
+   "d": "2026-10-27",
+   "t": "13:00",
+   "lg": "big6",
+   "a": "法大",
+   "b": "東大",
+   "sa": 15,
+   "sb": 0,
+   "st": "final"
   },
   {
    "d": "2026-10-31",
