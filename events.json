@@ -2,7 +2,9 @@
   "jingu": [],
   "kokuritsu": [],
   "rugby": [],
-  "hall": [],
+  "hall": [
+    { "time": "18:00", "name": "ミュージカル「ヘタリア~World☆Starts~」10th Anniversary", "sub": "" }
+  ],
   "alert": "",
-  "updated": "2026-10-29T05:40:00+09:00"
+  "updated": "2026-10-30T05:40:00+09:00"
 }
