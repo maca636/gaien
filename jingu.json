@@ -1,14 +1,7 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-10-28T03:48:47+09:00",
+ "updated": "2026-11-01T02:51:03+09:00",
  "days": {
-  "2026-10-31": [
-   {
-    "time": "13:00",
-    "name": "東京六大学野球秋季リーグ戦",
-    "sub": "立教大学 vs 明治大学"
-   }
-  ],
   "2026-11-01": [
    {
     "time": "13:00",
