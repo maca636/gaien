@@ -3,7 +3,6 @@ name: update-jingu
 on:
   schedule:
     - cron: "0 20 * * *"
-    - cron: "30 13 * * *"
   workflow_dispatch:
 
 permissions:
