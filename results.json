@@ -1,6 +1,6 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-11-03T07:24:05+09:00",
+ "updated": "2026-11-04T09:27:12+09:00",
  "season_start": "2026-09-01",
  "games": [
   {
@@ -1079,9 +1079,9 @@
    "lg": "big6",
    "a": "立大",
    "b": "明大",
-   "sa": null,
-   "sb": null,
-   "st": "sched"
+   "sa": 0,
+   "sb": 7,
+   "st": "final"
   },
   {
    "d": "2026-11-07",
