@@ -57,4 +57,5 @@
 - `scripts/jingu_build.py` が `jingu.json`（今日以降120日分の日程）と `results.json`（今季の試合結果・予定）を生成する。
 - `.github/workflows/update-jingu.yml`（GitHub Actions）が毎日 5:00（JST）に実行し、差分があればコミットしてPagesを再ビルドする。AI（トークン）は使わない。
 - 画面の神宮カードは `jingu.json`、ヘッダーの「試合結果」ボタンで開くパネルは `results.json` を表示する。順位表の勝点は「2勝先勝のカードで勝ち越したチームに1点」として集計した値で、公式と表記が異なる場合がある。
+- 日本青年館ホールは公式サイト（https://seinenkan-hall.com/ の「公演案内」）を `scripts/hall_build.py` で読み、`hall.json`（公演名と期間）を同じワークフローで生成する。画面では `events.json` の `hall` に同じ公演が無い場合だけ補う（時間は「公式サイトで確認」）。
 - `events.json` の `jingu` は常に `[]`（毎朝のルーティンは神宮を調べない）。
