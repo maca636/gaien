@@ -644,11 +644,16 @@ async function loadEvents(){
       const hj=await hr.json();
       const t=new Date();
       const today=`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;
-      const core=s=>(String(s).match(/[「『]([^」』]+)[」』]/)||[0,String(s)])[1].replace(/\s/g,'');
+      const core=s=>(String(s).normalize('NFKC').match(/[「『]([^」』]+)[」』]/)||[0,String(s).normalize('NFKC')])[1].replace(/\s/g,'');
+      const same=(x,y)=>{const a=core(x),b=core(y);return a.includes(b)||b.includes(a);};
       const have=Array.isArray(data.hall)?data.hall.filter(e=>e&&e.name):[];
-      const extra=(hj.shows||[]).filter(sh=>sh.days?sh.days.includes(today):(sh.start<=today&&today<=sh.end))
-        .filter(sh=>!have.some(e=>{const a=core(e.name),b=core(sh.title);return a.includes(b)||b.includes(a);}))
+      const ses=(hj.sessions||[]).filter(x=>x.date===today);
+      const fromSes=ses.filter(x=>!have.some(e=>same(e.name,x.title)))
+        .map(x=>{const sh=(hj.shows||[]).find(z=>same(z.title,x.title));return {time:x.time,name:sh?sh.title:x.title,sub:x.open?`開場 ${x.open}`:''};});
+      const fromShows=(hj.shows||[]).filter(sh=>sh.days?sh.days.includes(today):(sh.start<=today&&today<=sh.end))
+        .filter(sh=>!have.some(e=>same(e.name,sh.title))&&!ses.some(x=>same(x.title,sh.title)))
         .map(sh=>({time:'',name:sh.title,sub:'時間は公式サイトで確認'}));
+      const extra=fromSes.concat(fromShows).sort((x,y)=>(x.time||'99').localeCompare(y.time||'99'));
       data.hall=have.concat(extra);
     }catch(e){console.error('hall error',e);}
     renderEvents(data);

@@ -9,6 +9,7 @@ import urllib.request
 from datetime import date, datetime, timedelta, timezone
 
 SRC = "https://seinenkan-hall.com/"
+EPLUS = "https://eplus.jp/sf/venue/1602330/events"
 JST = timezone(timedelta(hours=9))
 
 
@@ -16,6 +17,29 @@ def fetch():
     req = urllib.request.Request(SRC, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read().decode("utf-8", "ignore")
+
+
+def fetch_sessions():
+    """イープラスの会場ページから、日ごとの開演・開場時間を読む。失敗しても公演案内だけで続行する。"""
+    try:
+        req = urllib.request.Request(EPLUS, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            h = r.read().decode("utf-8", "ignore")
+    except Exception as e:
+        print("eplus skipped:", e)
+        return None
+    t = re.sub(r"<script.*?</script>|<style.*?</style>", "", h, flags=re.S)
+    t = unicodedata.normalize("NFKC", re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t))))
+    pat = re.compile(r"(\d{4})/ ?(\d{1,2})/(\d{1,2})\([^)]*\) (?:先着|抽選|一般|先行|プレ)?\s*(.+?) 開演:(\d{1,2}:\d{2})~(?:\(開場:(\d{1,2}:\d{2})~\))?")
+    out = []
+    for m in pat.finditer(t):
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        item = {"date": date(y, mo, d).isoformat(), "title": m.group(4).strip(), "time": m.group(5).zfill(5)}
+        if m.group(6):
+            item["open"] = m.group(6).zfill(5)
+        if item not in out:
+            out.append(item)
+    return out
 
 
 def text(block, cls):
@@ -62,10 +86,17 @@ def main():
         shows.append(item)
     if not shows:
         sys.exit("no performances found on " + SRC)
-    out = {"source": SRC, "updated": datetime.now(JST).isoformat(timespec="seconds"), "shows": shows}
+    sessions = fetch_sessions()
+    if sessions is None:
+        try:
+            old_sessions = json.load(open("hall.json", encoding="utf-8")).get("sessions", [])
+        except (OSError, ValueError):
+            old_sessions = []
+        sessions = [x for x in old_sessions if x["date"] >= datetime.now(JST).date().isoformat()]
+    out = {"source": SRC, "updated": datetime.now(JST).isoformat(timespec="seconds"), "shows": shows, "sessions": sessions}
     try:
         old = json.load(open("hall.json", encoding="utf-8"))
-        if old.get("shows") == shows:
+        if old.get("shows") == shows and old.get("sessions") == sessions:
             print("hall.json: no change")
             return
     except (OSError, ValueError):
@@ -73,7 +104,7 @@ def main():
     with open("hall.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"hall.json: wrote {len(shows)} shows")
+    print(f"hall.json: wrote {len(shows)} shows, {len(sessions)} sessions")
 
 
 if __name__ == "__main__":
