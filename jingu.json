@@ -1,14 +1,7 @@
 {
  "source": "https://www.jingu-stadium.com/event/json/data.json",
- "updated": "2026-11-06T09:52:41+09:00",
+ "updated": "2026-11-07T08:58:55+09:00",
  "days": {
-  "2026-11-06": [
-   {
-    "time": "09:00",
-    "name": "東都大学秋季入替戦",
-    "sub": ""
-   }
-  ],
   "2026-11-07": [
    {
     "time": "13:00",
