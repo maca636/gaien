@@ -1,13 +1,7 @@
 {
   "source": "https://seinenkan-hall.com/",
-  "updated": "2026-11-08T08:29:03+09:00",
+  "updated": "2026-11-09T08:27:59+09:00",
   "shows": [
-    {
-      "title": "10th Anniversary ミュージカル「ヘタリア～World☆Starts～」",
-      "tag": "ミュージカル",
-      "start": "2026-10-30",
-      "end": "2026-11-08"
-    },
     {
       "title": "ウルトラマンシリーズ６０周年記念 オーケストラコンサート",
       "tag": "一般公演",
@@ -37,6 +31,12 @@
       "end": "2026-12-16"
     },
     {
+      "title": "SCORE!! 〜Musical friends〜 2027",
+      "tag": "一般公演",
+      "start": "2027-01-09",
+      "end": "2027-01-15"
+    },
+    {
       "title": "細坪基佳コンサート Nature of Year 2027",
       "tag": "コンサート",
       "start": "2027-01-16",
@@ -56,16 +56,6 @@
     }
   ],
   "sessions": [
-    {
-      "date": "2026-11-07",
-      "title": "10th Anniversary ミュージカル「ヘタリア~World☆Starts~」",
-      "time": "12:30"
-    },
-    {
-      "date": "2026-11-07",
-      "title": "10th Anniversary ミュージカル「ヘタリア~World☆Starts~」",
-      "time": "17:30"
-    },
     {
       "date": "2026-11-08",
       "title": "10th Anniversary ミュージカル「ヘタリア~World☆Starts~」",
