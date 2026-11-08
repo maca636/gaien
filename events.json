@@ -1,12 +1,8 @@
 {
   "jingu": [],
-  "kokuritsu": [
-    { "time": "14:00", "name": "明治安田J1リーグ 第14節 Rakuten SUPER MATCH", "sub": "ヴィッセル神戸 vs 浦和レッズ" }
-  ],
+  "kokuritsu": [],
   "rugby": [],
-  "hall": [
-    { "time": "13:00", "name": "10th Anniversary ミュージカル「ヘタリア～World☆Starts～」" }
-  ],
+  "hall": [],
   "alert": "",
-  "updated": "2026-11-08T05:34:42+09:00"
+  "updated": "2026-11-09T05:34:14+09:00"
 }
