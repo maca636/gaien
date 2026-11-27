@@ -1,8 +1,12 @@
 {
   "jingu": [],
-  "kokuritsu": [],
+  "kokuritsu": [
+    { "time": "17:30", "name": "LDH LIVE-EXPO 2026 -PERFECT YEAR BEST-", "sub": "開場 15:30" }
+  ],
   "rugby": [],
-  "hall": [],
+  "hall": [
+    { "time": "13:00", "name": "第73回 全国民俗芸能大会", "sub": "開場 12:00" }
+  ],
   "alert": "",
-  "updated": "2026-11-27T05:33:34+09:00"
+  "updated": "2026-11-28T05:34:05+09:00"
 }
