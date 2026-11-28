@@ -151,7 +151,8 @@ def main():
         result_days[k] = items
     now = datetime.now(JST).isoformat(timespec="seconds")
     out = {"source": SRC, "updated": now, "days": result_days}
-    a = write_if_changed("jingu.json", out, lambda old: old.get("days") == out["days"])
+    # 画面は updated が36時間以内かで鮮度を判定するため、日程が同じでも毎回書き換える
+    a = write_if_changed("jingu.json", out, lambda old: False)
     season_start, games = build_results(data, today)
     res = {"source": SRC, "updated": now, "season_start": season_start, "games": games}
     b = write_if_changed("results.json", res, lambda old: old.get("games") == games)
